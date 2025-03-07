@@ -1,0 +1,55 @@
+.header {
+  width: 100%;
+}
+
+.header .header-info {
+  display: flex;
+}
+
+.header .header-info-user {
+  margin: 10px 0px 0px;
+}
+
+.header p {
+  font-size: 15px;
+  margin-bottom: 0px;
+}
+
+.header .header-info-img {
+  margin: 10px;
+}
+
+.header-add-img .btn-img-user-right {
+  border-radius: 5px;
+  padding: 3px;
+}
+
+.header-add-img .btn-img-user-right:hover {
+  background-color: #b0b4bf;
+  cursor: pointer;
+  color: #ded5d5;
+}
+
+.header-add-img .btn-create-exam {
+  margin-right: 10px;
+}
+
+.header-add-img .header-title-create {
+  margin-left: 10px;
+}
+
+.header .header-search {
+  position: relative;
+}
+
+.header .header-search .header-search-input {
+  padding: 10px 0px 10px 35px;
+}
+
+.header-search .icon-search {
+  position: absolute;
+  left: 20px;
+  top: 16px;
+  transform: translate(-50%);
+  color: #7a7a7a;
+}
