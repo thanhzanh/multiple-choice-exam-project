@@ -8,6 +8,7 @@ export const createExam = async (formData) => {
         const res = await axios.post(`${API_URL}/create`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
+        console.log("Response từ server:", res.data);
         return res.data;
     } catch (error) {
         console.error("Lỗi khi tạo đề thi", error);

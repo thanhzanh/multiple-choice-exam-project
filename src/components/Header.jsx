@@ -10,7 +10,7 @@ const Header = () => {
   const navigate = useNavigate(); // hooks để điều hướng
 
   return (
-    <Navbar bg="light" expand="lg" className="px-3">
+    <Navbar bg="light" expand="lg" className="px-3 inner-header">
       <Container fluid >
         <Row className="align-items-center header">
           <Col xs={12} md={3} className='header-info'>

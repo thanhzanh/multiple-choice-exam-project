@@ -65,18 +65,30 @@ const CreateExam = () => {
       formData.append("image", exam.image);
     }    
 
-    await createExam(formData);
-
-    toast.success("Tạo đề thi thành công!");
+    const response = await createExam(formData); // gọi API tạo đề thi
     
-    navigate(`/de-thi/tao-cau-hoi`); // Chuyển hướng sang tạo câu hỏi cho đề thi vừa tạo
+    const examId = response.data._id;
+
+    try {
+      // phản hồi về data và id để chuyển sang tạo câu hỏi
+      if (response && response.data && examId) {
+        toast.success("Tạo đề thi thành công");
+        navigate(`/de-thi/tao-cau-hoi/${examId}`); // Chuyển hướng sang tạo câu hỏi cho đề thi vừa tạo
+      } else {
+        toast.error("Lỗi khi tạo đề thi");
+      }
+    } catch (error) {
+      toast.error("Lỗi khi tạo đề thi");
+    }
+
+    
   }
 
   return (
     <MainLayout>
       <h3 className="mb-4">Tạo đề thi mới</h3>
 
-      <div className="mt-4">
+      <div className="mt-2">
         <Row>
           {/* Ảnh đề thi */}
           <Col md={3}>

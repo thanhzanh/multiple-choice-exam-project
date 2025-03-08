@@ -10,6 +10,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
+.inner-sidebar {
+  position: fixed;
+}
+
 .logo {
   margin: 0px;
   font-family: Inter, sans-serif;
@@ -46,3 +50,30 @@
   margin-right: 10px;
 }
 
+.label-answer {
+  padding-left: 10px;
+}
+
+.btn-add-answer {
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin-top: 10px;
+  background-color: #81FFC8;
+  box-shadow: #484848;
+}
+
+.btn-save {
+  padding: 8px 10px;
+  border-radius: 5px;
+  background-color: #4E61FF;
+  color: #EDF2FF;
+}
+
+.btn-stt-questions {
+  padding: 8px 10px;
+  border-radius: 3px;
+  width: 40px;
+  color: #fff;
+  background-color: #3E65FE;
+  margin: 5px;
+}

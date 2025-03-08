@@ -5,8 +5,8 @@ import { faHouse, faHeart, faList, faSliders } from '@fortawesome/free-solid-svg
 
 const Sidebar = () => {
   return (
-    <div className="bg-light p-3" style={{ height: '130vh', width: '250px' }}>
-      <h4 className="logo">EduSTU</h4>
+    <div className="bg-light p-3 inner-sidebar" style={{ height: '130vh', width: '250px' }}>
+      <h4 className="logo">QuizSTU</h4>
       <Nav className="flex-column navbar">
         <Nav.Link className='navbar-item' href="#">
           <FontAwesomeIcon className='nav-icon' icon={faHouse} />

@@ -7,7 +7,7 @@ const TinyMCEEditor = ({ value, onChange }) => {
       apiKey="c2jm79inmod7lmptd7yluiyzj6ovd1ek35a07blb4rnt8ljp" // Chỉ cần khai báo 1 lần
       value={value}
       init={{
-        height: 220,
+        height: 190,
         menubar: false,
         plugins: "advlist autolink lists link charmap print preview anchor",
         toolbar: "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat",

@@ -53,3 +53,11 @@
   transform: translate(-50%);
   color: #7a7a7a;
 }
+
+.inner-header {
+  position: sticky; /* Giữ header cố định khi cuộn */
+  top: 0;
+  width: 100%;
+  z-index: 100; /* Đảm bảo header nằm trên các phần tử khác */
+  transition: top 0.3s ease-in-out; 
+}

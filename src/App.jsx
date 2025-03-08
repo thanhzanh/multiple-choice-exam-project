@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/de-thi/tao-de-thi" element={<CreateExam />} />
-        <Route path="/de-thi/tao-cau-hoi" element={<CreateQuestion />} />
+        <Route path="/de-thi/tao-cau-hoi/:examId" element={<CreateQuestion />} />
       </Routes>
       <ToastContainer />
     </Router>
