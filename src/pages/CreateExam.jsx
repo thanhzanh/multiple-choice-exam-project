@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { createExam } from "../services/ExamService";
 
 const CreateExam = () => {
-  // 
+  //
   const navigate = useNavigate();
   const [exam, setExam] = useState({
     title: "",
@@ -16,19 +16,30 @@ const CreateExam = () => {
     topic: "",
     privacy: "",
     status: "",
-    image: null
+    image: null,
   });
 
   const [errors, setErrors] = useState({}); // Lưu lỗi
 
-  // const [imagePreview, setImagePreview] = useState(null); // hiển thị ảnh xem trước
+  const [imagePreview, setImagePreview] = useState(null); // hiển thị ảnh xem trước
 
   const handleChange = (e) => {
-    setExam({ ...exam, [e.target.name] : e.target.value });
-  }
+    setExam({ ...exam, [e.target.name]: e.target.value });
+  };
 
+  // xử lý hình ảnh
   const handleFileChange = (e) => {
-    setExam({ ...exam, image: e.target.files[0] });
+    const file = e.target.files[0];
+    if (file) {
+      setExam({ ...exam, image: file });
+
+      // Hiển thị ảnh xem trước
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // validate form khi gửi lên server
@@ -37,9 +48,11 @@ const CreateExam = () => {
 
     if (!exam.title.trim()) newErrors.title = "Tên đề thi không được để trống!";
     if (!exam.level) newErrors.level = "Vui lòng chọn trình độ!";
-    if (!exam.subject.trim()) newErrors.subject = "Môn học không được để trống!";
+    if (!exam.subject.trim())
+      newErrors.subject = "Môn học không được để trống!";
     if (!exam.topic.trim()) newErrors.topic = "Chủ đề không được để trống!";
-    if (!exam.description.trim()) newErrors.description = "Mô tả không được để trống!";
+    if (!exam.description.trim())
+      newErrors.description = "Mô tả không được để trống!";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Nếu không có lỗi, trả về true
@@ -59,14 +72,14 @@ const CreateExam = () => {
     formData.append("topic", exam.topic);
     formData.append("privacy", exam.privacy);
     formData.append("status", exam.status);
-    
+
     // Kiểm tra nếu có ảnh thì mới gửi
     if (exam.image) {
       formData.append("image", exam.image);
-    }    
+    }
 
     const response = await createExam(formData); // gọi API tạo đề thi
-    
+
     const examId = response.data._id;
 
     try {
@@ -80,9 +93,7 @@ const CreateExam = () => {
     } catch (error) {
       toast.error("Lỗi khi tạo đề thi");
     }
-
-    
-  }
+  };
 
   return (
     <MainLayout>
@@ -92,15 +103,44 @@ const CreateExam = () => {
         <Row>
           {/* Ảnh đề thi */}
           <Col md={3}>
-            <Card className="p-3 text-center">
+            <Card className="p-3 text-center" style={{ height: 350 }}>
               <Card.Body>
                 <h5>Ảnh đề thi</h5>
-                <Form.Group>
+                <div
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    border: "2px dashed #ccc", // Viền nét đứt khi chưa có ảnh
+                    borderRadius: "8px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    overflow: "hidden",
+                    background: "#f8f9fa", // Màu nền xám nhẹ
+                  }}
+                >
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="Ảnh xem trước"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <span style={{ color: "#aaa" }}>Chưa chọn ảnh</span> // Hiển thị khi chưa có ảnh
+                  )}
+                </div>
+
+                <Form.Group className="mt-3">
                   <Form.Control
                     type="file"
                     name="image"
                     onChange={handleFileChange}
-                     />
+                    accept="image/*"
+                  />
                 </Form.Group>
               </Card.Body>
             </Card>
@@ -120,12 +160,20 @@ const CreateExam = () => {
                       value={exam.title}
                       onChange={handleChange}
                       isInvalid={!!errors.title}
-                      placeholder="Nhập tên đề thi" />
-                    <Form.Control.Feedback type="invalid">{errors.title}</Form.Control.Feedback>
+                      placeholder="Nhập tên đề thi"
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.title}
+                    </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-2">
                     <Form.Label>Trình độ</Form.Label>
-                    <Form.Select name="level" value={exam.level} onChange={handleChange} isInvalid={!!errors.level}> 
+                    <Form.Select
+                      name="level"
+                      value={exam.level}
+                      onChange={handleChange}
+                      isInvalid={!!errors.level}
+                    >
                       <option>Chọn trình độ</option>
                       <option value="Tiểu học">Tiểu học</option>
                       <option value="THCS">THCS</option>
@@ -133,29 +181,37 @@ const CreateExam = () => {
                       <option value="Cao đẳng">Cao đẳng</option>
                       <option value="Đại học">Đại học</option>
                     </Form.Select>
-                    <Form.Control.Feedback type="invalid">{errors.level}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.level}
+                    </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-2">
                     <Form.Label>Môn học</Form.Label>
-                    <Form.Control 
-                      type="text" 
+                    <Form.Control
+                      type="text"
                       name="subject"
                       value={exam.subject}
                       onChange={handleChange}
                       isInvalid={!!errors.subject}
-                      placeholder="Nhập tên môn học" />
-                    <Form.Control.Feedback type="invalid">{errors.subject}</Form.Control.Feedback>
+                      placeholder="Nhập tên môn học"
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.subject}
+                    </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-2">
                     <Form.Label>Chủ đề</Form.Label>
-                    <Form.Control 
-                      type="text" 
+                    <Form.Control
+                      type="text"
                       name="topic"
                       value={exam.topic}
                       onChange={handleChange}
                       isInvalid={!!errors.topic}
-                      placeholder="Nhập tên chủ đề" />
-                    <Form.Control.Feedback type="invalid">{errors.topic}</Form.Control.Feedback>
+                      placeholder="Nhập tên chủ đề"
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.topic}
+                    </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Mô tả</Form.Label>
@@ -168,7 +224,9 @@ const CreateExam = () => {
                       placeholder="Mô tả bổ sung"
                       isInvalid={!!errors.description}
                     />
-                    <Form.Control.Feedback type="invalid">{errors.description}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.description}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Form>
               </Card.Body>
@@ -182,17 +240,25 @@ const CreateExam = () => {
                 <h5>Cấu hình truy cập</h5>
                 <Form.Group className="mb-2">
                   <Form.Label>Phạm vi chia sẻ</Form.Label>
-                  <Form.Select name="privacy" value={exam.privacy} onChange={handleChange}>
+                  <Form.Select
+                    name="privacy"
+                    value={exam.privacy}
+                    onChange={handleChange}
+                  >
                     <option>Chọn phạm vi</option>
                     <option value="private">Riêng tư</option>
                     <option value="public">Công khai</option>
                   </Form.Select>
-                </Form.Group> 
+                </Form.Group>
 
                 {/* Trạng thái */}
                 <Form.Group>
                   <Form.Label>Trạng thái đề thi</Form.Label>
-                  <Form.Select name="status" value={exam.status} onChange={handleChange}>
+                  <Form.Select
+                    name="status"
+                    value={exam.status}
+                    onChange={handleChange}
+                  >
                     <option>Chọn trạng thái</option>
                     <option value="active">Hoạt động</option>
                     <option value="inactive">Dừng hoạt động</option>
@@ -209,7 +275,9 @@ const CreateExam = () => {
         <Button variant="secondary" className="me-2">
           Trở về
         </Button>
-        <Button variant="primary" onClick={handleCreateExam}>Tạo đề thi</Button>
+        <Button variant="primary" onClick={handleCreateExam}>
+          Tạo đề thi
+        </Button>
       </div>
     </MainLayout>
   );
