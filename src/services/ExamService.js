@@ -48,4 +48,13 @@ export const getExamById  = async (examId) => {
         console.error("Lỗi khi lấy bài thi", error);
         throw error;
     }
-}
+};
+
+// xóa đề thi
+export const deleteExam = async (examId) => {
+    try {
+        await axios.delete(`${API_URL}/detail/${examId}`);
+    } catch (error) {
+        console.error("Lỗi khi xóa đề thi", error);
+    }
+};

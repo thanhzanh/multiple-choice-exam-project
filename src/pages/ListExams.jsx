@@ -16,20 +16,50 @@ import {
   faPlay,
   faChartSimple,
 } from "@fortawesome/free-solid-svg-icons";
+
 import { listExams } from "../services/ExamService";
+import { countQuestionByExam } from "../services/QuestionService";
 
 const ListExams = () => {
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
+  const [countQuestion, setCountQuestion] = useState({});
 
   useEffect(() => {
     const getListExams = async () => {
-      const data = await listExams();
-      setExams(data.exam);
+      try {
+        const data = await listExams();
+        const examsList = data.exam;
+
+        // gọi API đếm số câu hỏi cho từng bài thi
+        const questionCounts = await Promise.all(
+          examsList.map(async (exam) => {
+            const response  = await countQuestionByExam(exam._id);
+            return {  examId: exam._id, totalQuestion: response.totalQuestion };
+          })
+        )
+
+        // Cập nhật state danh sách bài thi
+        setExams(examsList);
+        
+        // Chuyển danh sách số câu hỏi thành Object
+        const countMap = questionCounts.reduce((acc, item) => {
+          acc[item.examId] = { totalQuestion: item.totalQuestion };
+          return acc;
+        }, {});
+
+        setCountQuestion(countMap);
+
+      } catch (error) {
+        console.error("Lỗi khi đếm số câu hỏi");
+      }
+      
     };
 
     getListExams();
   }, []);
+
+  
 
   return (
     <MainLayout>
@@ -77,7 +107,7 @@ const ListExams = () => {
                           className="text-warning item-exam-icon"
                           title="Số câu hỏi"
                         />
-                        0
+                        {countQuestion[exam._id]?.totalQuestion ?? 0}
                       </span>
                       <span>
                         <FontAwesomeIcon

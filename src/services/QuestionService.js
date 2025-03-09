@@ -19,9 +19,20 @@ export const saveQuestion = async (formData) => {
 export const getQuestionsByExam = async (examId) => {
     try {
         const res = axios.get(`${API_URL}/getQuestionsByExam/${examId}`);
-        return (await res).data;
+        return res.data;
     } catch (error) {
         console.error("Lỗi khi lấy danh sách câu hỏi", error);
+        throw error;
+    }
+}
+
+// đếm câu hỏi theo bài thi
+export const countQuestionByExam = async (examId) => {
+    try {
+        const res = await axios.get(`${API_URL}/countQuestion/${examId}`);
+        return res.data;
+    } catch (error) {
+        console.error("Lỗi khi đếm số lượng câu hỏi", error);
         throw error;
     }
 }
