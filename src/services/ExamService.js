@@ -53,7 +53,8 @@ export const getExamById  = async (examId) => {
 // xóa đề thi
 export const deleteExam = async (examId) => {
     try {
-        await axios.delete(`${API_URL}/detail/${examId}`);
+        const res = await axios.delete(`${API_URL}/delete/${examId}`);
+        return res.data;
     } catch (error) {
         console.error("Lỗi khi xóa đề thi", error);
     }

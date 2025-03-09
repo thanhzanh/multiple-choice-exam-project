@@ -10,7 +10,6 @@ const EditExam = () => {
   const navigate = useNavigate();
 
   const { examId } = useParams(); // lấy examId gửi lên  
-  console.log(examId);
   
   const [errors, setErrors] = useState({}); // Lưu lỗi
 

@@ -17,13 +17,19 @@ import {
   faChartSimple,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { listExams } from "../services/ExamService";
+import { listExams, deleteExam } from "../services/ExamService";
 import { countQuestionByExam } from "../services/QuestionService";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ListExams = () => {
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
   const [countQuestion, setCountQuestion] = useState({});
+
+  const { examId } = useParams();
+  console.log(examId);
+  
 
   useEffect(() => {
     const getListExams = async () => {
@@ -59,7 +65,22 @@ const ListExams = () => {
     getListExams();
   }, []);
 
-  
+  const handleDeleteExam = async (examId) => {
+    const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa đề thi này không?");
+    if (!confirmDelete) return;
+    try {
+      await deleteExam(examId);
+
+      toast.success("Xóa thành công");
+
+      // load lại danh sách bài thi
+      setExams(exams.filter(exam => exam._id !== examId));
+      
+      navigate('/workspace/exams/list');
+    } catch (error) {
+      toast.error("Lỗi khi xóa");
+    }
+  };
 
   return (
     <MainLayout>
@@ -139,6 +160,7 @@ const ListExams = () => {
                       <FontAwesomeIcon
                         icon={faTrash}
                         className="text-danger fs-5"
+                        onClick={() => handleDeleteExam(exam._id)}
                         title="Xóa"
                       />
                       <FontAwesomeIcon
