@@ -26,15 +26,14 @@ const ListExams = () => {
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
   const [countQuestion, setCountQuestion] = useState({});
+  const [keyword, setKeyword] = useState("");
 
   const { examId } = useParams();
-  console.log(examId);
-  
 
   useEffect(() => {
     const getListExams = async () => {
       try {
-        const data = await listExams();
+        const data = await listExams(keyword);
         const examsList = data.exam;
 
         // gọi API đếm số câu hỏi cho từng bài thi
@@ -63,7 +62,9 @@ const ListExams = () => {
     };
 
     getListExams();
-  }, []);
+
+    
+  }, [keyword]);
 
   const handleDeleteExam = async (examId) => {
     const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa đề thi này không?");
@@ -75,7 +76,7 @@ const ListExams = () => {
 
       // load lại danh sách bài thi
       setExams(exams.filter(exam => exam._id !== examId));
-      
+
       navigate('/workspace/exams/list');
     } catch (error) {
       toast.error("Lỗi khi xóa");
@@ -93,8 +94,11 @@ const ListExams = () => {
             <Form.Group className="d-flex header-search-exam">
               <Form.Control
                 type="text"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
                 placeholder="Nhập từ khóa tìm kiếm..."
                 className="me-2 header-search-input"
+                
               />
               <FontAwesomeIcon className="icon-search" icon={faSearch} />
             </Form.Group>

@@ -16,9 +16,11 @@ export const createExam = async (formData) => {
 };
 
 // danh sách bài thi
-export const listExams = async () => {
+export const listExams = async (keyword = "") => {
     try {
-        const res = await axios.get(`${API_URL}/index`);
+        const res = await axios.get(`${API_URL}/index`, {
+            params: { keyword }
+        });
         return res.data;
     } catch (error) {
         console.error("Lỗi khi lấy danh sách bài thi", error);
