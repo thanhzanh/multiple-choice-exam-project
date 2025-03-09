@@ -77,3 +77,51 @@
   background-color: #3E65FE;
   margin: 5px;
 }
+
+/* List Exam */
+
+.header-search-exam {
+  position: relative;
+}
+
+.main-list-exam .header-search-exam .header-search-input {
+  padding-left: 40px;
+  width: 300px;
+}
+
+.header-search-exam .icon-search {
+  position: absolute;
+  font-size: 18px;
+  left: 20px;
+  top: 13px;
+  transform: translate(-50%);
+}
+
+.count-exam {
+  margin: 8px 30px 8px 10px;
+  font-size: 18px;
+  color: #000;
+}
+
+/* list exam */
+.item-exam {
+  margin: 20px;
+}
+
+.item-exam .item-exam-img {
+  height: 150px;
+}
+
+.item-exam .item-exam-title {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.item-exam .item-exam-create,.item-exam-icon {
+  margin-right: 10px;
+}
+
+.item-exam .item-exam-icon {
+  cursor: pointer;
+  font-size: 18px;
+}

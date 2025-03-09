@@ -28,12 +28,12 @@ const Header = () => {
           </Col>
           <Col xs={12} md={5}>
             <Form className="d-flex ms-auto header-search">
-              <Form.Control type="text" placeholder="Tìm kiếm..." className="me-2 header-search-input" />
+              <Form.Control type="text" placeholder="Tìm kiếm đề thi" className="me-2 header-search-input" />
               <FontAwesomeIcon className='icon-search' icon={faSearch}/>
             </Form>
           </Col>
           <Col xs={12} md={4} className='header-add-img d-flex justify-content-end align-items-center'>
-            <Button variant='primary' className='btn-create-exam' onClick={() => navigate("/de-thi/tao-de-thi")}>
+            <Button variant='primary' className='btn-create-exam' onClick={() => navigate("/workspace/exams/create-exam")}>
               <FontAwesomeIcon icon={faSquarePlus} />
               <span className='header-title-create'>Tạo đề thi</span>
             </Button>

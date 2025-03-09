@@ -7,7 +7,7 @@ const Dashboard = () => {
 
   return (
     <MainLayout>
-      <h3 className="mb-4">Dashboard</h3>
+      <h4 className="mb-4">Dashboard</h4>
     </MainLayout>
   );
 };

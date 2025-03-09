@@ -86,7 +86,7 @@ const CreateExam = () => {
       // phản hồi về data và id để chuyển sang tạo câu hỏi
       if (response && response.data && examId) {
         toast.success("Tạo đề thi thành công");
-        navigate(`/de-thi/tao-cau-hoi/${examId}`); // Chuyển hướng sang tạo câu hỏi cho đề thi vừa tạo
+        navigate(`/workspace/exams/create-question/${examId}`); // Chuyển hướng sang tạo câu hỏi cho đề thi vừa tạo
       } else {
         toast.error("Lỗi khi tạo đề thi");
       }
@@ -97,7 +97,7 @@ const CreateExam = () => {
 
   return (
     <MainLayout>
-      <h3 className="mb-4">Tạo đề thi mới</h3>
+      <h4 className="mb-4">Tạo đề thi mới</h4>
 
       <div className="mt-2">
         <Row>

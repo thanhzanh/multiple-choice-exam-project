@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MainLayout from "../layouts/MainLayout";
 import { Row, Col, Form, Card } from "react-bootstrap";
 import TinyMCEEditor from "../components/TinyMCEEditor";
@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 
-import { saveQuestion } from "../services/QuestionService";
+import { saveQuestion, getQuestionsByExam } from "../services/QuestionService";
+
 import { useParams } from "react-router-dom"; // lấy id từ API phản hồi
 
 
@@ -19,6 +20,21 @@ const CreateQuestion = () => {
 
   // examId truyền từ params về từ phản hồi API
   const { examId } = useParams(); // Lấy examId từ URL
+
+  // lấy ra danh sách câu hỏi
+  useEffect(() => {
+    const getListQuestions = async () => {
+      if (!examId) return;
+      try {
+        const response = await getQuestionsByExam(examId); // API lấy danh sách câu hỏi theo đề thi
+        questionsList(response.data); // cập nhật danh sách câu hỏi
+      } catch (error) {
+        console.error("Lỗi khi tải câu hỏi:", error);
+      }
+    };
+
+    getListQuestions(); // gọi hàm để thực hiện
+  }, [examId]); // chạy khi examId thay đổi
 
   // Cập nhật nội dung đáp án
   const handleOptionChange = (index, content) => {
@@ -58,6 +74,12 @@ const CreateQuestion = () => {
       // Cập nhật danh sách câu hỏi
       setQuestionsList([...questionsList, formData]);
 
+      // reset lại để tạo câu hỏi mới
+      setQuestionType("single");
+      setQuestionText("");
+      setOptions(["",""]);
+      setCorrectAnswer([]);
+
       toast.success("Lưu thành công");
 
     } catch (error) {
@@ -80,7 +102,7 @@ const CreateQuestion = () => {
           <Col className="" md={4}>
             <Card className="card-list-part-exam" style={{ height:200 }}>
               <Card.Body>
-                <h5>Danh sách câu hỏi</h5>
+                <h4>Danh sách câu hỏi</h4>
                 {questionsList.map((_, i) => (
                 <button key={i} type="button" className="btn-stt-questions">
                   {i + 1}
