@@ -292,8 +292,8 @@ const EditExam = () => {
 
       {/* Nút cập nhât đề thi */}
       <div className="mt-4 text-end">
-        <Button variant="secondary" className="me-2">
-          Trở về
+        <Button variant="secondary" className="me-2" onClick={() => navigate(`/workspace/exams/edit-question/${examId}`)}>
+          Chỉnh sửa câu hỏi
         </Button>
         <Button variant="primary" onClick={handleEditExam}>
           Cập nhật đề thi

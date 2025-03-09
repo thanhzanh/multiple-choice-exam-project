@@ -7,6 +7,7 @@ import EditExam from './pages/EditExam';
 import Dashboard from './pages/Dashboard';
 import CreateQuestion from './pages/CreateQuestion';
 import ListExams from './pages/ListExams';
+import EditQuestion from './pages/EditQuestion';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/workspace/exams/edit-exam/:examId" element={<EditExam />} />
         <Route path="/workspace/exams/list" element={<ListExams />} />
         <Route path="/workspace/exams/create-question/:examId" element={<CreateQuestion />} />
+        <Route path="/workspace/exams/edit-question/:examId" element={<EditQuestion />} />
       </Routes>
       <ToastContainer />
     </Router>

@@ -13,18 +13,19 @@ export const saveQuestion = async (formData) => {
         console.error("Lỗi khi tạo câu hỏi", error);
         throw error;
     }
-}
+};
 
 // danh sách câu hỏi theo bài thi
 export const getQuestionsByExam = async (examId) => {
     try {
-        const res = axios.get(`${API_URL}/getQuestionsByExam/${examId}`);
+        const res = await axios.get(`${API_URL}/getQuestionsByExam/${examId}`);
+        
         return res.data;
     } catch (error) {
         console.error("Lỗi khi lấy danh sách câu hỏi", error);
         throw error;
     }
-}
+};
 
 // đếm câu hỏi theo bài thi
 export const countQuestionByExam = async (examId) => {
@@ -35,5 +36,5 @@ export const countQuestionByExam = async (examId) => {
         console.error("Lỗi khi đếm số lượng câu hỏi", error);
         throw error;
     }
-}
+};
 

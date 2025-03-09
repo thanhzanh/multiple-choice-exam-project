@@ -15,6 +15,8 @@ import {
   faTrash,
   faPlay,
   faChartSimple,
+  faEarthAmericas,
+  faShield,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { listExams, deleteExam } from "../services/ExamService";
@@ -39,14 +41,14 @@ const ListExams = () => {
         // gọi API đếm số câu hỏi cho từng bài thi
         const questionCounts = await Promise.all(
           examsList.map(async (exam) => {
-            const response  = await countQuestionByExam(exam._id);
-            return {  examId: exam._id, totalQuestion: response.totalQuestion };
+            const response = await countQuestionByExam(exam._id);
+            return { examId: exam._id, totalQuestion: response.totalQuestion };
           })
-        )
+        );
 
         // Cập nhật state danh sách bài thi
         setExams(examsList);
-        
+
         // Chuyển danh sách số câu hỏi thành Object
         const countMap = questionCounts.reduce((acc, item) => {
           acc[item.examId] = { totalQuestion: item.totalQuestion };
@@ -54,20 +56,18 @@ const ListExams = () => {
         }, {});
 
         setCountQuestion(countMap);
-
       } catch (error) {
         console.error("Lỗi khi đếm số câu hỏi");
       }
-      
     };
 
     getListExams();
-
-    
   }, [keyword]);
 
   const handleDeleteExam = async (examId) => {
-    const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa đề thi này không?");
+    const confirmDelete = window.confirm(
+      "Bạn có chắc chắn muốn xóa đề thi này không?"
+    );
     if (!confirmDelete) return;
     try {
       await deleteExam(examId);
@@ -75,9 +75,9 @@ const ListExams = () => {
       toast.success("Xóa thành công");
 
       // load lại danh sách bài thi
-      setExams(exams.filter(exam => exam._id !== examId));
+      setExams(exams.filter((exam) => exam._id !== examId));
 
-      navigate('/workspace/exams/list');
+      navigate("/workspace/exams/list");
     } catch (error) {
       toast.error("Lỗi khi xóa");
     }
@@ -90,7 +90,7 @@ const ListExams = () => {
       <div className="main-list-exam">
         <Card className="shadow-sm rounded">
           <Card.Header className="d-flex">
-            <p className="count-exam">{ exams.length } đề thi</p>
+            <p className="count-exam">{exams.length} đề thi</p>
             <Form.Group className="d-flex header-search-exam">
               <Form.Control
                 type="text"
@@ -98,7 +98,6 @@ const ListExams = () => {
                 onChange={(e) => setKeyword(e.target.value)}
                 placeholder="Nhập từ khóa tìm kiếm..."
                 className="me-2 header-search-input"
-                
               />
               <FontAwesomeIcon className="icon-search" icon={faSearch} />
             </Form.Group>
@@ -110,12 +109,12 @@ const ListExams = () => {
                 <Card className="shadow-sm item-exam">
                   <Card.Img
                     variant="top"
-                    src={`http://localhost:3000/uploads/${exam.image}`} 
+                    src={`http://localhost:3000/uploads/${exam.image}`}
                     alt="Exam Image"
                     className="item-exam-img"
                   />
                   <Card.Body className="">
-                    <p className="item-exam-title">{ exam.title }</p>
+                    <p className="item-exam-title">{exam.title}</p>
                     <p className="text-muted item-exam-create">
                       <FontAwesomeIcon
                         icon={faClock}
@@ -150,6 +149,21 @@ const ListExams = () => {
                         />
                         0
                       </span>
+                      <span>
+                        {exam.privacy === "private" ? (
+                          <FontAwesomeIcon
+                            icon={faShield}
+                            className="item-exam-icon"
+                            title="Riêng tư"
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faEarthAmericas}
+                            className="item-exam-icon"
+                            title="Công khai"
+                          />
+                        )}
+                      </span>
                     </div>
                   </Card.Body>
                   {/* Chức năng */}
@@ -158,7 +172,9 @@ const ListExams = () => {
                       <FontAwesomeIcon
                         icon={faEdit}
                         className="text-primary fs-5"
-                        onClick={() => navigate(`/workspace/exams/edit-exam/${exam._id}`)}
+                        onClick={() =>
+                          navigate(`/workspace/exams/edit-exam/${exam._id}`)
+                        }
                         title="Chỉnh sửa"
                       />
                       <FontAwesomeIcon
