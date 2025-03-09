@@ -15,3 +15,14 @@ export const createExam = async (formData) => {
         throw error;
     }
 };
+
+// danh sách bài thi
+export const listExams = async () => {
+    try {
+        const res = await axios.get(`${API_URL}/index`);
+        return res.data;
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách bài thi", error);
+        throw error;
+    }
+}
