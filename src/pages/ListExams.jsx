@@ -25,7 +25,6 @@ const ListExams = () => {
   useEffect(() => {
     const getListExams = async () => {
       const data = await listExams();
-      console.log("Dữ liệu API trả về:", data.exam);
       setExams(data.exam);
     };
 
@@ -39,7 +38,7 @@ const ListExams = () => {
       <div className="main-list-exam">
         <Card className="shadow-sm rounded">
           <Card.Header className="d-flex">
-            <p className="count-exam">1 đề thi</p>
+            <p className="count-exam">{ exams.length } đề thi</p>
             <Form.Group className="d-flex header-search-exam">
               <Form.Control
                 type="text"
@@ -104,7 +103,7 @@ const ListExams = () => {
                       <FontAwesomeIcon
                         icon={faEdit}
                         className="text-primary fs-5"
-                        
+                        onClick={() => navigate(`/workspace/exams/edit-exam/${exam._id}`)}
                         title="Chỉnh sửa"
                       />
                       <FontAwesomeIcon

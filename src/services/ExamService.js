@@ -8,7 +8,6 @@ export const createExam = async (formData) => {
         const res = await axios.post(`${API_URL}/create`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
         });
-        console.log("Response từ server:", res.data);
         return res.data;
     } catch (error) {
         console.error("Lỗi khi tạo đề thi", error);
@@ -23,6 +22,30 @@ export const listExams = async () => {
         return res.data;
     } catch (error) {
         console.error("Lỗi khi lấy danh sách bài thi", error);
+        throw error;
+    }
+}
+
+// Gửi dữ liệu chỉnh sửa đề thi lên server
+export const editExam = async (examId, formData) => {
+    try {
+        const res = await axios.patch(`${API_URL}/edit/${examId}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        return res.data;
+    } catch (error) {
+        console.error("Lỗi khi chỉnh sửa đề thi", error);
+        throw error;
+    }
+};
+
+// lấy bài thi theo examId
+export const getExamById  = async (examId) => {
+    try {
+        const res = await axios.get(`${API_URL}/detail/${examId}`);        
+        return res.data;
+    } catch (error) {
+        console.error("Lỗi khi lấy bài thi", error);
         throw error;
     }
 }
