@@ -118,6 +118,7 @@ const ListExams = () => {
                     <p className="text-muted item-exam-create">
                       <FontAwesomeIcon
                         icon={faClock}
+                        title="Ngày tạo"
                         className="item-exam-icon"
                       />
                       {moment(exam.createdAt).format("DD/MM/YYYY")}

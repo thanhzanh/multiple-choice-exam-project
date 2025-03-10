@@ -125,3 +125,22 @@
   cursor: pointer;
   font-size: 18px;
 }
+
+/* button question when choice */
+.btn-stt-questions {
+  background-color: #1E90FF; /* Màu nền mặc định */
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-stt-questions:hover {
+  background-color: #228B22; /* Màu hover */
+}
+
+.btn-selected {
+  background-color: #228B22 !important; /* Màu xanh khi được chọn */
+  color: white;
+  font-weight: bold;
+}

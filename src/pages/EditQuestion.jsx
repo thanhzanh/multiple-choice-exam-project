@@ -6,10 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 
-import { saveQuestion, getQuestionsByExam } from "../services/QuestionService";
+import { editQuesion, getQuestionsByExam } from "../services/QuestionService";
 
 import { useParams } from "react-router-dom"; // lấy id từ API phản hồi
-
 
 const EditQuestion = () => {
   const [questionType, setQuestionType] = useState("single"); // Loại câu hỏi
@@ -20,7 +19,7 @@ const EditQuestion = () => {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
 
   // examId truyền từ params về từ phản hồi API
-  const { examId } = useParams(); // Lấy examId từ URL
+  const { examId } = useParams(); // Lấy examId, id từ URL
 
   // lấy ra danh sách câu hỏi
   useEffect(() => {
@@ -58,45 +57,36 @@ const EditQuestion = () => {
     }
   };
 
-  const handleSaveQuestion = async () => {
+  const handleEditQuestion = async () => {
     if (!questionText.trim()) {
       toast.info("Vui lòng nhập câu hỏi");
       return;
     }
 
-    // Loại bỏ thẻ HTML trước khi lưu
-    const plainTextQuestion = questionText.replace(/<\/?[^>]+(>|$)/g, ""); 
-    const plainTextOptions = options.map(option => option.replace(/<\/?[^>]+(>|$)/g, ""));
-    const plainTextCorrectAnswer = correctAnswer.map(answer => answer.replace(/<\/?[^>]+(>|$)/g, ""));
-
     // nếu đáp án là true_false, fill_in_the_blank thì lưu null (không cần lưu options)
-    const optionToSave = (questionType === "true_false" || questionType === "fill_in_the_blank" ) ? null : plainTextOptions;
+    const optionToSave = (questionType === "true_false" || questionType === "fill_in_the_blank" ) ? null : options;
 
     const formData = {
       examId,
-      questionText: plainTextQuestion,
+      questionText: questionText,
       type: questionType,
       options: optionToSave,
-      correctAnswer: plainTextCorrectAnswer
+      correctAnswer: correctAnswer
     }
 
     try {
       // gửi lên server lưu vào database
-      await saveQuestion(formData);
+      await editQuesion(selectedQuestion._id, formData);
 
-      // Cập nhật danh sách câu hỏi
-      setQuestionsList([...questionsList, formData]);
+      // Cập nhật câu hỏi sau khi chỉnh sửa
+      setQuestionsList((prev) => 
+        prev.map((q) => (q._id === selectedQuestion._id) ? { ...q, ...formData } : q)
+      );
 
-      // reset lại để tạo câu hỏi mới
-      setQuestionType("single");
-      setQuestionText("");
-      setOptions(["",""]);
-      setCorrectAnswer([]);
-
-      toast.success("Lưu thành công");
+      toast.success("Chỉnh sửa thành công");
 
     } catch (error) {
-      toast.error("Lỗi khi lưu câu hỏi");
+      toast.error("Lỗi khi chỉnh sửa câu hỏi");
     }
   }
 
@@ -112,9 +102,9 @@ const EditQuestion = () => {
   return (
     <MainLayout>
       <Row className="d-flex justify-content-between align-items-center">
-        <Col><h3 className="mb-4">Tạo câu hỏi</h3></Col>
+        <Col><h3 className="mb-4">Chỉnh sửa câu hỏi</h3></Col>
         <Col className="text-end">
-        <button type="button" onClick={handleSaveQuestion} className="btn-save">Lưu câu hỏi</button>
+        <button type="button" onClick={handleEditQuestion} className="btn-save">Chỉnh sửa câu hỏi</button>
         </Col>
       </Row>
 
@@ -124,16 +114,17 @@ const EditQuestion = () => {
           <Col className="" md={4}>
             <Card className="card-list-part-exam" style={{ height:200 }}>
               <Card.Body>
-                <h4>Danh sách câu hỏi</h4>
+                <h4 className="mb-5">Danh sách câu hỏi</h4>
                 {questionsList.map((question, i) => (
                 <button 
                     key={question._id} 
                     type="button" 
-                    className="btn-stt-questions"
+                    className={`btn-stt-questions me-2 ${selectedQuestion?._id === question._id ? "btn-selected" : ""}`}
                     onClick={() => handleSelectQuestion(question)}
                 >
                   {i + 1}
                 </button>
+                 
               ))}
               </Card.Body>
             </Card>

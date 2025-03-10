@@ -38,3 +38,19 @@ export const countQuestionByExam = async (examId) => {
     }
 };
 
+// chỉnh sửa câu hỏi
+export const editQuesion = async (id, formData) => {
+    try {
+        const res = await axios.put(`${API_URL}/edit/${id}`, formData, {
+            headers: { "Content-Type": "application/json" },
+        });
+        console.log(res.data);
+        
+        return res.data;
+
+    } catch (error) {
+        console.error("Lỗi khi chỉnh sửa câu hỏi", error);
+        throw error;
+    }
+};
+
