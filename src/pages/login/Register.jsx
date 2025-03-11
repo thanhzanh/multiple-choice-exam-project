@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import banner from "../assets/banner.png";
-import { createAccount } from "../services/AccountService";
+import banner from "../../assets/banner.png";
+import { createAccount } from "../../services/AccountService";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+
 const Register = () => {
     const navigate = useNavigate();
     const [register, setRegister] = useState({
@@ -11,6 +14,8 @@ const Register = () => {
         password: "",
         password_confirmation: ""
     });
+
+    const [showPassword, setShowPassword] = useState(false); // show password
 
     const [errors, setErrors] = useState({});
 
@@ -85,15 +90,23 @@ const Register = () => {
                 className="form-control"
                 />
             </div>
-            <div className="mb-3 form-group">
+
+            <div className="mb-3 form-group inner-input">
                 <label className="form-label">Mật khẩu</label>
-                <input
-                type="password"
-                name="password"
-                value={register.password}
-                onChange={handleChange}
-                className="form-control"
-                />
+                <div className="password-wrapper">
+                    <input
+                    type={showPassword ? "text" : "password"}
+                    className="form-control"
+                    name="password"
+                    value={register.password}
+                    onChange={handleChange}
+                    />
+                    <FontAwesomeIcon
+                    className="inner-eye"
+                    icon={showPassword ? faEyeSlash : faEye}
+                    onClick={() => setShowPassword(!showPassword)}
+                    />
+                </div>
             </div>
             <div className="mb-3 form-group">
                 <label className="form-label">Xác nhận mật khẩu</label>
@@ -108,8 +121,8 @@ const Register = () => {
             <button type="submit" className="btn btn-primary w-100 mt-3">
                 Đăng ký
             </button>
-            <p className="text-center text-muted">
-                Already have an account? <a className="text-primary" onClick={() => navigate('/auth/login')}>Đăng nhập</a>
+            <p className="text-center mt-2 text-muted">
+                Bạn đã có tài khoản? <a className="text-primary register-link" onClick={() => navigate('/auth/login')}>Đăng nhập</a>
             </p>
             </form> 
         </div>

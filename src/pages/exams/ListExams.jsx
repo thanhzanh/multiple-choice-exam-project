@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import "moment-timezone";
-import MainLayout from "../layouts/MainLayout";
+import MainLayout from "../../layouts/MainLayout";
 import { Row, Col, Form, Button, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,8 +19,8 @@ import {
   faShield,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { listExams, deleteExam } from "../services/ExamService";
-import { countQuestionByExam } from "../services/QuestionService";
+import { listExams, deleteExam } from "../../services/ExamService";
+import { countQuestionByExam } from "../../services/QuestionService";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 

@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import banner from "../assets/banner.png";
+import banner from "../../assets/banner.png";
 import { GoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-import { loginAccount } from "../services/AccountService";
+import { loginAccount } from "../../services/AccountService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faG } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
-
 
 const Login = () => {
   const navigate = useNavigate();
-  
+
   const handleGoogleSuccess = () => {
     window.open("http://localhost:3000/api/v1/users/auth/google", "_self");
   };
@@ -25,8 +24,10 @@ const Login = () => {
   // login email & password
   const [login, setLogin] = useState({
     email: "",
-    password: ""
+    password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [errors, setErrors] = useState({});
 
@@ -36,34 +37,33 @@ const Login = () => {
 
   // xử lý đăng nhập
   const handleLogin = async (e) => {
-    e.preventDefault();  // Ngăn form reload lại trang
+    e.preventDefault(); // Ngăn form reload lại trang
 
     try {
       const userData = {
         email: login.email,
-        password: login.password
-      }
-      
+        password: login.password,
+      };
+
       // Gọi API đăng nhập
       const response = await loginAccount(userData);
 
       if (response.data.code !== 200) {
-        toast.error(response.data.message)
+        toast.error(response.data.message);
         return;
       }
 
       toast.success("Đăng nhập thành công");
 
       navigate("/workspace/exams/list");
-
     } catch (error) {
       if (error.response && error.response.data) {
         const { err, message } = error.response.data;
         setErrors((prevErrors) => ({
-            ...prevErrors,
-            [err]: message
-      }));
-      toast.error(message);      
+          ...prevErrors,
+          [err]: message,
+        }));
+        toast.error(message);
       }
     }
   };
@@ -81,10 +81,13 @@ const Login = () => {
       >
         <h4 className="text-center mb-4">Đăng nhập</h4>
 
-        <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleFailure} />
-        <p className="text-center mb-2">hoặc tiếp tục với</p>
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={handleGoogleFailure}
+        />
+        <p className="text-center mt-3 mb-3 or-divider">hoặc tiếp tục với</p>
         <form method="POST" onSubmit={handleLogin}>
-          <div className="mb-3">
+          <div className="mb-3 form-group">
             <label className="form-label">Email</label>
             <input
               type="email"
@@ -94,15 +97,22 @@ const Login = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="mb-3">
+          <div className="mb-3 form-group inner-input">
             <label className="form-label">Mật khẩu</label>
-            <input
-              type="password"
-              className="form-control"
-              name="password"
-              value={login.password}
-              onChange={handleChange}
-            />
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control"
+                name="password"
+                value={login.password}
+                onChange={handleChange}
+              />
+              <FontAwesomeIcon
+                className="inner-eye"
+                icon={showPassword ? faEyeSlash : faEye}
+                onClick={() => setShowPassword(!showPassword)}
+              />
+            </div>
           </div>
           <div className="d-flex justify-content-between">
             <a href="#" className="text-decoration-none">
@@ -112,10 +122,15 @@ const Login = () => {
           <button type="submit" className="btn btn-primary w-100 mt-3">
             Đăng nhập
           </button>
-          <p className="text-center text-muted">
-              Bạn chưa có tài khoản?   
-              <a className="text-primary" onClick={() => navigate('/auth/register')}>Đăng ký</a>
-            </p>
+          <p className="text-center text-muted mt-2">
+            Bạn chưa có tài khoản?
+            <a
+              className="text-primary register-link"
+              onClick={() => navigate("/auth/register")}
+            >
+              Đăng ký
+            </a>
+          </p>
         </form>
       </div>
     </div>

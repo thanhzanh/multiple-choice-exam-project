@@ -3,18 +3,19 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import CreateExam from "./pages/CreateExam";
-import EditExam from "./pages/EditExam";
-import CreateQuestion from "./pages/CreateQuestion";
-import ListExams from "./pages/ListExams";
-import EditQuestion from "./pages/EditQuestion";
+import Login from "./pages/login/Login";
+import Register from "./pages/login/Register";
+import CreateExam from "./pages/exams/CreateExam";
+import EditExam from "./pages/exams/EditExam";
+import ListExams from "./pages/exams/ListExams";
+import CreateQuestion from "./pages/questions/CreateQuestion";
+import EditQuestion from "./pages/questions/EditQuestion";
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
       <Router>
         <Routes>
           <Route path="/auth/login" element={<Login />} />

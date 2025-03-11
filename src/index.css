@@ -152,3 +152,55 @@
   color: white;
   font-weight: bold;
 }
+
+.or-divider {
+  position: relative;
+  display: inline-block;
+  padding: 0 10em; /* Khoảng cách giữa chữ và đường border */
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 150px;
+  height: 1px;
+  background-color: #ccc; /* Màu của đường border */
+}
+
+.or-divider::before {
+  left: 300px;
+}
+
+.or-divider::after {
+  right: 300px;
+}
+
+.register-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* show eye password */
+.inner-input {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.inner-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #555;
+}
+
+.inner-eye:hover {
+  color: #000;
+}

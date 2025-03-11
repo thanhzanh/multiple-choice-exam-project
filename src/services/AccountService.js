@@ -20,11 +20,13 @@ export const createAccount = async (userData) => {
 // Đăng nhập tài khoản
 export const loginAccount = async (userData) => {
     try {
-        const response = await axios.post(`${API_URL}/login`,
+        const response = await axios.post(`${API_URL}/login`, // axios.post(url, data, config)
             JSON.stringify(userData),
-            {
-            headers: { "Content-Type": "application/json" },
-        });
+            { 
+                withCredentials: true,
+                headers: { "Content-Type": "application/json" },
+            
+            });
         console.log(response);
         
         return response;

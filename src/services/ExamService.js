@@ -7,6 +7,7 @@ export const createExam = async (formData) => {
     try {
         const res = await axios.post(`${API_URL}/create`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true
         });
         return res.data;
     } catch (error) {
@@ -19,7 +20,7 @@ export const createExam = async (formData) => {
 export const listExams = async (keyword = "") => {
     try {
         const res = await axios.get(`${API_URL}/index`, {
-            params: { keyword }
+            params: { keyword },
         });
         return res.data;
     } catch (error) {

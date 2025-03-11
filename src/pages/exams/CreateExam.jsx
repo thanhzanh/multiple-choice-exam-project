@@ -1,44 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Row, Col, Form, Button, Card } from "react-bootstrap";
-import MainLayout from "../layouts/MainLayout";
+import MainLayout from "../../layouts/MainLayout";
 import { toast } from "react-toastify";
-import { editExam, getExamById } from "../services/ExamService";
-import { useParams } from "react-router-dom";
+import { createExam } from "../../services/ExamService";
 
-const EditExam = () => {
+const CreateExam = () => {
+  //
   const navigate = useNavigate();
-
-  const { examId } = useParams(); // lấy examId gửi lên  
-  
-  const [errors, setErrors] = useState({}); // Lưu lỗi
-
-  const [imagePreview, setImagePreview] = useState(null); // hiển thị ảnh xem trước
-
-  useEffect(() => {
-    if (examId) {
-        getExamById(examId).then((response) => {
-            
-            setExam({
-                title: response.title,
-                description: response.description,
-                level: response.level,
-                subject: response.subject,
-                topic: response.topic,
-                privacy: response.privacy,
-                status: response.status,
-                image: null
-            });
-
-            if (response.image) {
-                setImagePreview(`http://localhost:3000/uploads/${response.image}`)
-            } else {
-                setImagePreview(null);
-            }                       
-        });
-    }
-  }, [examId]);
-
   const [exam, setExam] = useState({
     title: "",
     description: "",
@@ -49,6 +18,10 @@ const EditExam = () => {
     status: "",
     image: null,
   });
+
+  const [errors, setErrors] = useState({}); // Lưu lỗi
+
+  const [imagePreview, setImagePreview] = useState(null); // hiển thị ảnh xem trước
 
   const handleChange = (e) => {
     setExam({ ...exam, [e.target.name]: e.target.value });
@@ -85,7 +58,7 @@ const EditExam = () => {
     return Object.keys(newErrors).length === 0; // Nếu không có lỗi, trả về true
   };
 
-  const handleEditExam = async () => {
+  const handleCreateExam = async () => {
     if (!validateForm()) {
       toast.error("Vui lòng điền đầy đủ thông tin!");
       return;
@@ -101,23 +74,30 @@ const EditExam = () => {
     formData.append("status", exam.status);
 
     // Kiểm tra nếu có ảnh thì mới gửi
-    if (exam.image && exam.image instanceof File) {
-        formData.append("image", exam.image);
-    }      
+    if (exam.image) {
+      formData.append("image", exam.image);
+    }
+
+    const response = await createExam(formData); // gọi API tạo đề thi
+
+    const examId = response.data._id;
 
     try {
-      await editExam(examId, formData); // gọi API chỉnh sửa
-
-      toast.success("Chỉnh sửa thành công");
-      navigate("/workspace/exams/list");
+      // phản hồi về data và id để chuyển sang tạo câu hỏi
+      if (response && response.data && examId) {
+        toast.success("Tạo đề thi thành công");
+        navigate(`/workspace/exams/create-question/${examId}`); // Chuyển hướng sang tạo câu hỏi cho đề thi vừa tạo
+      } else {
+        toast.error("Lỗi khi tạo đề thi");
+      }
     } catch (error) {
-      toast.error("Lỗi khi chỉnh sửa đề thi");
+      toast.error("Lỗi khi tạo đề thi");
     }
   };
 
   return (
     <MainLayout>
-      <h4 className="mb-4">Chỉnh sửa đề thi</h4>
+      <h4 className="mb-4">Tạo đề thi mới</h4>
 
       <div className="mt-2">
         <Row>
@@ -290,17 +270,17 @@ const EditExam = () => {
         </Row>
       </div>
 
-      {/* Nút cập nhât đề thi */}
+      {/* Nút tạo đề thi */}
       <div className="mt-4 text-end">
-        <Button variant="secondary" className="me-2" onClick={() => navigate(`/workspace/exams/edit-question/${examId}`)}>
-          Chỉnh sửa câu hỏi
+        <Button variant="secondary" className="me-2">
+          Trở về
         </Button>
-        <Button variant="primary" onClick={handleEditExam}>
-          Cập nhật đề thi
+        <Button variant="primary" onClick={handleCreateExam}>
+          Tạo đề thi
         </Button>
       </div>
     </MainLayout>
   );
 };
 
-export default EditExam;
+export default CreateExam;
