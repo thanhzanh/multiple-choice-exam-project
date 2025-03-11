@@ -34,3 +34,15 @@ export const loginAccount = async (userData) => {
         throw error;
     }
 };
+
+// Đăng xuất
+export const logoutAccount = async () => {
+    try {
+        await axios.post(`${API_URL}/logout`, {},
+            { withCredentials: true }
+        );
+        console.log("Đã đăng xuất");
+    } catch (error) {
+        console.error("Lỗi đăng xuất:", error);
+    }
+};

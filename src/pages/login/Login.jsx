@@ -38,7 +38,7 @@ const Login = () => {
       if (data.success) {
         toast.success("Đăng nhập thành công");
 
-        navigate("/workspace/exams/list");
+        navigate("/workspace/exams/list", { replace: true });
       } else {
         toast.error("Đăng nhập Google thất bại");
       }
