@@ -99,7 +99,7 @@ const CreateQuestion = () => {
       <div className="mt-2">
         <Row>
           {/* Danh sách phần thi */}
-          <Col className="" md={4}>
+          <Col className="card-sticky-list" md={4}>
             <Card className="card-list-part-exam" style={{ height:200 }}>
               <Card.Body>
                 <h4>Danh sách câu hỏi</h4>

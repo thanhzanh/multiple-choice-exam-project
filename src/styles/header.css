@@ -59,4 +59,5 @@
   width: 100%;
   z-index: 100; /* Đảm bảo header nằm trên các phần tử khác */
   transition: top 0.3s ease-in-out; 
+  overflow-y: auto;
 }
