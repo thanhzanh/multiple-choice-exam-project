@@ -36,7 +36,7 @@ const ListExams = () => {
     const getListExams = async () => {
       try {
         const data = await listExams(keyword);
-        const examsList = data.exam;
+        const examsList = data.exams;
 
         // gọi API đếm số câu hỏi cho từng bài thi
         const questionCounts = await Promise.all(
