@@ -1,34 +1,40 @@
 import React, { useState } from "react";
 import banner from "../../assets/reset_password.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { forgotPassword } from "../../services/ForgotPasswordService";
 
-const ForgotPassword = () => {
+const OTPPassword = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
+  const location = useLocation(); 
+
+  const email = location.state?.email || ""; // dùng để nhận email trang trước
+
+  const [otp, setOtp] = useState("");
 
   const handleChange = (e) => {
-    setEmail(e.target.value);
+    setOtp(e.target.value);
   };
 
-  const handleForgotPassword = async (event) => {
+  const handleOtpPassword = async (event) => {
     event.preventDefault();
 
     try {
-        const response = await forgotPassword(email); // Gọi API  
+        const response = await forgotPassword(email, otp); // Gọi API  
+
+        console.log(response);
 
         if (response.data.code !== 200) {
             toast.error(response.data.message || "Lỗi khi gửi email.");
             return;
         }
 
-        toast.success("Đã gửi mã OTP qua email. Vui lòng kiểm tra hộp thư.");
+        toast.success("OP hợp lệ. Vui lòng đặt lại mật khẩu");
 
-        navigate("/auth/otp-password", { state: { email } });
+        navigate('/auth/reset-password', { state: { email } })
     } catch (error) {
-        toast.error("Lỗi khi gửi email.");
+        toast.error("Xác thực OTP thất bại");
     }
 };
 
@@ -46,34 +52,25 @@ const ForgotPassword = () => {
         style={{ width: "500px", zIndex: 10 }}
       >
         <h4 className="text-left mb-4">Quên mật khẩu</h4>
-        <p className="text-title-note">Vui lòng nhập email của bạn và kiểm tra hộp thư để lấy mật khẩu mới</p>
-        <form method="POST" onSubmit={handleForgotPassword}>
+        <p className="text-title-note">Vui lòng nhập OTP đã nhận từ email.</p>
+        <form method="POST" onSubmit={handleOtpPassword}>
           <div className="mb-3 form-group">
             <label className="form-label">Email</label>
             <input
-              type="email"
+              type="text"
               className="form-control"
-              name="email"
-              value={email}
+              name="otp"
+              value={otp}
               onChange={handleChange}
             />
           </div>
           <button type="submit" className="btn btn-primary w-100 mt-3">
             Xác nhận
           </button>
-          <p className="text-center text-muted mt-2">
-            Bạn đã có tài khoản?
-            <a
-              className="text-primary register-link"
-              onClick={() => navigate("/auth/login")}
-            >
-              Đăng nhập
-            </a>
-          </p>
         </form>
       </div>
     </div>
   );
 };
 
-export default ForgotPassword;
+export default OTPPassword;

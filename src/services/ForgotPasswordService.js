@@ -15,3 +15,17 @@ export const forgotPassword = async (email) => {
         throw error;
     }
 };
+
+export const otpPassword = async () => {
+    try {
+        const response = await axios.post(`${API_URL}/password/otp`,
+            { email, otp },
+            { withCredentials: true,
+                headers: { "Content-Type": "application/json" }
+             }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
