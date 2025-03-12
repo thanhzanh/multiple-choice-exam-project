@@ -26,9 +26,7 @@ export const loginAccount = async (userData) => {
                 withCredentials: true,
                 headers: { "Content-Type": "application/json" },
             
-            });
-        console.log(response);
-        
+            });        
         return response;
     } catch (error) {
         throw error;
@@ -53,8 +51,6 @@ export const getUser = async () => {
         const response = await axios.get(`${API_URL}/getUser`,
             { withCredentials: true }
         );
-
-        console.log("Thong tin người dug: ", response.data);
         
         return response.data;
     } catch (error) {

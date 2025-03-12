@@ -70,3 +70,9 @@ export const deleteExam = async (examId) => {
         console.error("Lỗi khi xóa đề thi", error);
     }
 };
+
+// danh sách levels bài thi
+export const getListEnumExam = async () => {
+    const res = await axios.get(`${API_URL}/levels`);
+    return res.data;
+};

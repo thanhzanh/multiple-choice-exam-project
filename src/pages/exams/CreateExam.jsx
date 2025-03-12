@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Row, Col, Form, Button, Card } from "react-bootstrap";
 import MainLayout from "../../layouts/MainLayout";
 import { toast } from "react-toastify";
-import { createExam } from "../../services/ExamService";
+import { createExam, getListEnumExam } from "../../services/ExamService";
 
 const CreateExam = () => {
   //
@@ -18,6 +18,18 @@ const CreateExam = () => {
     status: "",
     image: null,
   });
+
+  const [levels, setLevels] = useState([]);
+
+  const getLevels = async () => {
+    try {
+      const response = await getListEnumExam();
+
+      setLevels(response.levels);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách trình độ:", error);
+    }
+  };
 
   const [errors, setErrors] = useState({}); // Lưu lỗi
 
@@ -79,7 +91,7 @@ const CreateExam = () => {
     }
 
     const response = await createExam(formData); // gọi API tạo đề thi
-    
+
     const examId = response.data._id;
 
     try {
@@ -92,7 +104,7 @@ const CreateExam = () => {
       }
     } catch (error) {
       if (error.response.status === 401) {
-        navigate('/auth/login');
+        navigate("/auth/login");
       }
     }
   };
@@ -174,14 +186,16 @@ const CreateExam = () => {
                       name="level"
                       value={exam.level}
                       onChange={handleChange}
+                      onClick={getLevels}
                       isInvalid={!!errors.level}
                     >
                       <option>Chọn trình độ</option>
-                      <option value="Tiểu học">Tiểu học</option>
-                      <option value="THCS">THCS</option>
-                      <option value="THPT">THPT</option>
-                      <option value="Cao đẳng">Cao đẳng</option>
-                      <option value="Đại học">Đại học</option>
+                      {Array.isArray(levels) &&
+                        levels.map((level, index) => (
+                          <option key={index} value={level}>
+                            {level}
+                          </option>
+                        ))}
                     </Form.Select>
                     <Form.Control.Feedback type="invalid">
                       {errors.level}
