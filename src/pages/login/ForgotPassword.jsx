@@ -17,7 +17,7 @@ const ForgotPassword = () => {
     event.preventDefault();
 
     try {
-        const response = await forgotPassword(email); // Gọi API  
+        const response = await forgotPassword(email); // Gọi API          
 
         if (response.data.code !== 200) {
             toast.error(response.data.message || "Lỗi khi gửi email.");

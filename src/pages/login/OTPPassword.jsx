@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import banner from "../../assets/reset_password.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { forgotPassword } from "../../services/ForgotPasswordService";
+import { otpPassword } from "../../services/ForgotPasswordService";
 
 const OTPPassword = () => {
   const navigate = useNavigate();
@@ -21,23 +21,22 @@ const OTPPassword = () => {
     event.preventDefault();
 
     try {
-        const response = await forgotPassword(email, otp); // Gọi API  
-
-        console.log(response);
+        const response = await otpPassword(email, otp); // Gọi API  
 
         if (response.data.code !== 200) {
             toast.error(response.data.message || "Lỗi khi gửi email.");
             return;
         }
 
-        toast.success("OP hợp lệ. Vui lòng đặt lại mật khẩu");
+        toast.success("OTP hợp lệ. Vui lòng đặt lại mật khẩu");
 
-        navigate('/auth/reset-password', { state: { email } })
+        // Lưu token backend trả về vào state để xác nhận lại mật khẩu
+        navigate('/auth/reset-password', { state: { email, token: response.data.token } });
     } catch (error) {
-        toast.error("Xác thực OTP thất bại");
+      console.error("API Error:", error.response?.data || error.message); 
+      toast.error(error.response?.data?.message || "Xác thực OTP thất bại");
     }
 };
-
 
   return (
     <div className="position-relative d-flex justify-content-center align-items-center vh-100">
@@ -55,7 +54,17 @@ const OTPPassword = () => {
         <p className="text-title-note">Vui lòng nhập OTP đã nhận từ email.</p>
         <form method="POST" onSubmit={handleOtpPassword}>
           <div className="mb-3 form-group">
-            <label className="form-label">Email</label>
+              <label className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                name="email"
+                value={email}
+                readOnly
+              />
+            </div>
+          <div className="mb-3 form-group">
+            <label className="form-label">OTP</label>
             <input
               type="text"
               className="form-control"
