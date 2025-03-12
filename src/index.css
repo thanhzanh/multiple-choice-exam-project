@@ -126,13 +126,13 @@
   font-size: 18px;
 }
 
-.card-sticky-list {
+/* .card-sticky-list {
   position: sticky;
   top: 100px;
   height: 100vh;
   overflow-y: auto;
   position: absolute;
-}
+} */
 
 /* button question when choice */
 .btn-stt-questions {

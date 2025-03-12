@@ -90,7 +90,7 @@ const ListExams = () => {
       <div className="main-list-exam">
         <Card className="shadow-sm rounded">
           <Card.Header className="d-flex">
-            <p className="count-exam">{exams.length} đề thi</p>
+            <p className="count-exam"><strong>{exams.length}</strong> đề thi</p>
             <Form.Group className="d-flex header-search-exam">
               <Form.Control
                 type="text"
