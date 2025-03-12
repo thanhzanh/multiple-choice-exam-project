@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   Container,
@@ -18,12 +18,32 @@ import logo1 from "../assets/avatar2.png";
 import logo2 from "../assets/avatar1.png";
 import { useNavigate } from "react-router-dom";
 import { logoutAccount } from "../services/AccountService";
+import { getUser } from "../services/AccountService";
 import { toast } from "react-toastify";
 
 const Header = () => {
   const navigate = useNavigate(); // hooks để điều hướng
 
   const [showMenu, setShowMenu] = useState(false);
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getInfoUser = async () => {
+      try {
+        const infoUser = await getUser(); // Phản hồi từ gọi API
+
+        console.log("Dữ liệu API:", infoUser);
+        setUser(infoUser)
+
+        
+      } catch (error) {
+        console.error("Lỗi khi thấy thông tin người dùng:", error);
+      }
+      
+    }
+    getInfoUser();
+  }, [])
 
   // Xử lý đăng xuất
   const handleLogoutAccount = async () => {
@@ -44,13 +64,13 @@ const Header = () => {
         <Row className="align-items-center header">
           <Col xs={12} md={3} className="header-info">
             <Image
-              src={logo1}
+              src={user?.avatar || logo1}
               roundedCircle
               style={{ width: "50px", height: "50px", objectFit: "cover" }}
               className="header-info-img"
             />
             <div className="header-info-user">
-              <span className="ml-2 font-weight-bold">Võ Thành Danh</span>
+              <span className="ml-2 font-weight-bold">{user ? user.fullName : "Đang tải..."}</span>
               <p>Kênh đề thi</p>
             </div>
           </Col>
@@ -88,7 +108,7 @@ const Header = () => {
             <div className="position-relative">
               <Image
                 className="btn-img-user-right position-relative"
-                src={logo2}
+                src={user?.avatar || logo1}
                 roundedCircle
                 style={{ width: "60px", height: "60px", objectFit: "cover" }}
               />

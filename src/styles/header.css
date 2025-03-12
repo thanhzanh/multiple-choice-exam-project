@@ -8,6 +8,7 @@
 
 .header .header-info-user {
   margin: 10px 0px 0px;
+  cursor: pointer;
 }
 
 .header p {
@@ -17,16 +18,12 @@
 
 .header .header-info-img {
   margin: 10px;
+  cursor: pointer;
 }
 
 .header-add-img .btn-img-user-right {
   padding: 5px;
-}
-
-.header-add-img .btn-img-user-right:hover {
-  background-color: #0B5ED7;
   cursor: pointer;
-  border-radius: 50%;
 }
 
 .header-add-img .btn-create-exam {

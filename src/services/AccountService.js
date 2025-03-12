@@ -47,3 +47,17 @@ export const logoutAccount = async () => {
     }
 };
 
+// LLấy thông tin người dùng đăng nhập
+export const getUser = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getUser`,
+            { withCredentials: true }
+        );
+
+        console.log("Thong tin người dug: ", response.data);
+        
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
