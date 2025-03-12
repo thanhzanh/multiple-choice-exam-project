@@ -91,7 +91,9 @@ const CreateExam = () => {
         toast.error("Lỗi khi tạo đề thi");
       }
     } catch (error) {
-      toast.error("Lỗi khi tạo đề thi");
+      if (error.response.status === 401) {
+        navigate('/auth/login');
+      }
     }
   };
 

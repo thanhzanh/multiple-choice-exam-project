@@ -228,3 +228,9 @@
 .list-info-tool li:hover {
   background-color: #f0f0f0;
 }
+
+/* Quên mật khẩu */
+.text-title-note {
+  font-size: 16px;
+  color: gray;
+}

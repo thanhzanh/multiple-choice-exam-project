@@ -142,9 +142,9 @@ const Login = () => {
             </div>
           </div>
           <div className="d-flex justify-content-between">
-            <a href="#" className="text-decoration-none">
+            <p onClick={() => navigate('/auth/forgot-password')} className="text-decoration-none text-primary">
               Quên mật khẩu?
-            </a>
+            </p>
           </div>
           <button type="submit" className="btn btn-primary w-100 mt-3">
             Đăng nhập
