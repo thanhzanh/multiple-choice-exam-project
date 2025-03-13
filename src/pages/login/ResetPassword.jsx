@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import banner from "../../assets/reset_password.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,10 +12,15 @@ const ResetPassword = () => {
   const location = useLocation();
 
   const email = location.state?.email || ""; // Email gửi từ OTP sang
-  const token = location.state?.token || ""; // Token gửi từ OTP sang
+  const token = location.state?.token || ""; // Token gửi từ OTP sang  
 
-  console.log("Token", token);
-  
+  // check nếu người dùng truy cập thẳng trang /auth/otp thì quay lại
+  useEffect(() => {
+    if (!email || !token) {
+      toast.error("Bạn chưa xác thực OTP. Vui lòng thực hiện lại.");
+      navigate("/auth/otp-password");
+    }
+  }, [email, token, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState({

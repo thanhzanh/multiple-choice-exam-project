@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import banner from "../../assets/reset_password.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,6 +10,14 @@ const OTPPassword = () => {
   const location = useLocation(); 
 
   const email = location.state?.email || ""; // dùng để nhận email trang trước
+
+  // check nếu người dùng truy cập thẳng trang /auth/forgot-password thì quay lại
+  useEffect(() => {
+    if (!email) {
+      toast.error("Vui lòng nhập địa chỉ email để xác nhận.");
+      navigate("/auth/forgot-password");
+    }
+  }, [email, navigate]);
 
   const [otp, setOtp] = useState("");
 

@@ -16,6 +16,7 @@ import HomeRedirect from "./pages/home/HomeRedirect";
 import ForgotPassword from "./pages/login/ForgotPassword";
 import OTPPassword from "./pages/login/OTPPassword";
 import ResetPassword from "./pages/login/ResetPassword";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -35,13 +36,18 @@ function App() {
           <Route path="/auth/reset-password" element={<ResetPassword />} />
 
           {/* Router Exams */}
-          <Route path="/workspace/exams/create-exam" element={<CreateExam />} />
-          <Route path="/workspace/exams/edit-exam/:examId" element={<EditExam />} />
-          <Route path="/workspace/exams/list" element={<ListExams />} />
-
+          <Route element={<ProtectedRoute/>}>
+            <Route path="/workspace/exams/create-exam" element={<CreateExam />} />
+            <Route path="/workspace/exams/edit-exam/:examId" element={<EditExam />} />
+            <Route path="/workspace/exams/list" element={<ListExams />} />    
+          </Route>
+          
           {/* Router Questions */}
-          <Route path="/workspace/exams/create-question/:examId" element={<CreateQuestion />} />
-          <Route path="/workspace/exams/edit-question/:examId" element={<EditQuestion />} />
+          <Route element={<ProtectedRoute/>}>
+            <Route path="/workspace/exams/create-question/:examId" element={<CreateQuestion />} />
+            <Route path="/workspace/exams/edit-question/:examId" element={<EditQuestion />} />
+          </Route>
+          
         </Routes>
         <ToastContainer />
       </Router>
