@@ -15,14 +15,17 @@ import {
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import logo1 from "../assets/avatar2.png";
-import logo2 from "../assets/avatar1.png";
 import { useNavigate } from "react-router-dom";
 import { logoutAccount } from "../services/AccountService";
 import { getUser } from "../services/AccountService";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { search } from "../services/ExamService";
 
 const Header = () => {
   const navigate = useNavigate(); // hooks để điều hướng
+
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const [showMenu, setShowMenu] = useState(false);
 
@@ -33,15 +36,13 @@ const Header = () => {
       try {
         const infoUser = await getUser(); // Phản hồi từ gọi API
 
-        setUser(infoUser)
-        
+        setUser(infoUser);
       } catch (error) {
         console.error("Lỗi khi thấy thông tin người dùng:", error);
       }
-      
-    }
+    };
     getInfoUser();
-  }, [])
+  }, []);
 
   // Xử lý đăng xuất
   const handleLogoutAccount = async () => {
@@ -54,7 +55,19 @@ const Header = () => {
     } catch (error) {
       console.error("Lỗi khi đăng xuất");
     }
-  }
+  };
+
+  // Tìm kiếm bài thi trên kênh đề thi
+  const handleSearchExam = async (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (searchKeyword.trim() !== "") {
+        const searchUrl = `/exams/search?keyword=${searchKeyword}`;
+        window.open(searchUrl);
+      }
+    }
+  };
 
   return (
     <Navbar bg="light" expand="lg" className="px-3 inner-header">
@@ -68,7 +81,9 @@ const Header = () => {
               className="header-info-img"
             />
             <div className="header-info-user">
-              <span className="ml-2 font-weight-bold">{user ? user.fullName : "Đang tải..."}</span>
+              <span className="ml-2 font-weight-bold">
+                {user ? user.fullName : "Đang tải..."}
+              </span>
               <p>Kênh đề thi</p>
             </div>
           </Col>
@@ -77,6 +92,9 @@ const Header = () => {
               <Form.Control
                 type="text"
                 placeholder="Tìm kiếm đề thi"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                onKeyDown={handleSearchExam} // Bắt sự kiện Enter
                 className="me-2 header-search-input"
               />
               <FontAwesomeIcon className="icon-search" icon={faSearch} />
@@ -95,33 +113,40 @@ const Header = () => {
               <FontAwesomeIcon icon={faSquarePlus} />
               <span className="header-title-create">Tạo đề thi</span>
             </Button>
-            <Button
-              variant="primary"
-              className="btn-create-exam"
-              onClick={handleLogoutAccount}
-            >
-              <FontAwesomeIcon icon={faRightFromBracket} />
-              <span className="header-title-create">Đăng xuất</span>
-            </Button>
-            <div className="position-relative">
+            <div className="inner-profile">
               <Image
-                className="btn-img-user-right position-relative"
+                className="btn-img-user-right"
                 src={user?.avatar || logo1}
                 roundedCircle
-                style={{ width: "60px", height: "60px", objectFit: "cover" }}
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  objectFit: "cover",
+                  cursor: "pointer",
+                }}
+                onClick={() => setShowMenu(!showMenu)} // Toggle menu khi click
               />
-              <ul className="position-absolute list-info-tool">
-                <li>Hồ sơ cá nhân</li>
-                <li>
-                  <FontAwesomeIcon icon={faRightFromBracket} />
-                  Đăng xuất
-                </li>
-              </ul>
+              {showMenu && ( 
+                <motion.ul
+                  className="list-menu-profile"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: showMenu ? 1 : 0, y: showMenu ? 0 : -10 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                >
+                  <li>Thông tin tài khoản</li>
+                  <li onClick={() => {
+                    handleLogoutAccount();
+                    setShowMenu(false);
+                  }}>
+                    <FontAwesomeIcon icon={faRightFromBracket} /> Đăng xuất
+                  </li>
+                </motion.ul>
+              )}
             </div>
           </Col>
         </Row>
       </Container>
-    </Navbar>
+    </Navbar> 
   );
 };
 

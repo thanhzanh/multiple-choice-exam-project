@@ -76,3 +76,8 @@ export const getListEnumExam = async () => {
     const res = await axios.get(`${API_URL}/levels`);
     return res.data;
 };
+
+export const search = async (searchKeyword) => {
+    const res = await axios.get(`${API_URL}/search?keyword=${searchKeyword}`);
+    return res;
+}

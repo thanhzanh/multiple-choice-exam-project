@@ -17,6 +17,8 @@ import ForgotPassword from "./pages/login/ForgotPassword";
 import OTPPassword from "./pages/login/OTPPassword";
 import ResetPassword from "./pages/login/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Profile from "./pages/account/Profile";
+import Search from "./pages/exams/Search";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -46,6 +48,16 @@ function App() {
           <Route element={<ProtectedRoute/>}>
             <Route path="/workspace/exams/create-question/:examId" element={<CreateQuestion />} />
             <Route path="/workspace/exams/edit-question/:examId" element={<EditQuestion />} />
+          </Route>
+
+          {/* Router Profile */}
+          <Route element={<ProtectedRoute/>}>
+            <Route path="/account/profile" element={<Profile />} />
+          </Route>
+
+          {/* Router Search */}
+          <Route element={<Search/>}>
+            <Route path="/exams/search" element={<Search />} />
           </Route>
           
         </Routes>

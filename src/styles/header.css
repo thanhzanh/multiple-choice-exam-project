@@ -1,5 +1,6 @@
 .header {
   width: 100%;
+  height: 100px;
 }
 
 .header .header-info {
@@ -56,5 +57,38 @@
   width: 100%;
   z-index: 100; /* Đảm bảo header nằm trên các phần tử khác */
   transition: top 0.3s ease-in-out; 
-  overflow-y: auto;
+}
+
+.inner-profile {
+  position: relative; /* Đảm bảo menu tuyệt đối dựa vào đây */
+  z-index: 10;
+}
+
+.list-menu-profile {
+  position: absolute;
+  background-color: #ffff;
+  list-style: none;
+  font-size: 16px;
+  width: 200px;
+  z-index: 999; 
+  right: 0; 
+  top: 110%; 
+  padding-left: 0;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: auto; /* Ngăn click khi ẩn */
+}
+
+
+.list-menu-profile li {
+  padding: 8px 15px;
+  cursor: pointer;
+  color: #000;
+}
+
+.list-menu-profile li:hover {
+  background-color: #0B5ED7;
+  color: #ffff;
 }
