@@ -5,35 +5,42 @@ import TinyMCEEditor from "../../components/TinyMCEEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import { saveQuestion, getQuestionsByExam } from "../../services/QuestionService";
 
-import { useParams } from "react-router-dom"; // lấy id từ API phản hồi
+import { useParams, useLocation } from "react-router-dom"; // lấy id từ API phản hồi
 
 
 const CreateQuestion = () => {
+
+  const navigate = useNavigate(); // Điều hướng
+
+  const location = useLocation(); // Dùng để nhận data từ trang trước
+
   const [questionType, setQuestionType] = useState("single"); // Loại câu hỏi
   const [questionText, setQuestionText] = useState(""); // Nội dung câu hỏi
   const [options, setOptions] = useState(["", ""]); // Danh sách đáp án (mặc định có 2 đáp án)
   const [correctAnswer, setCorrectAnswer] = useState([]); // Đáp án đúng
-  const [questionsList, setQuestionsList] = useState([]); // Danh sách câu hỏi
+  const [questionsList, setQuestionsList] = useState(location.state?.questionsList || []); // Danh sách câu hỏi
 
   // examId truyền từ params về từ phản hồi API
   const { examId } = useParams(); // Lấy examId từ URL
 
   // lấy ra danh sách câu hỏi
-  useEffect(() => {
-    const getListQuestions = async () => {
-      if (!examId) return;
-      try {
-        const response = await getQuestionsByExam(examId); // API lấy danh sách câu hỏi theo đề thi
-        questionsList(response.data); // cập nhật danh sách câu hỏi
-      } catch (error) {
-        console.error("Lỗi khi tải câu hỏi:", error);
-      }
-    };
+  const getListQuestions = async () => {
+    if (!examId) return;
+    try {
+      const response = await getQuestionsByExam(examId); // API lấy danh sách câu hỏi theo đề thi
+      setQuestionsList(response.data); // cập nhật danh sách câu hỏi
+    } catch (error) {
+      console.error("Lỗi khi tải câu hỏi:", error);
+    }
+  };
 
+  useEffect(() => {
     getListQuestions(); // gọi hàm để thực hiện
+
   }, [examId]); // chạy khi examId thay đổi
 
   // Cập nhật nội dung đáp án
@@ -69,10 +76,12 @@ const CreateQuestion = () => {
 
     try {
       // gửi lên server lưu vào database
-      await saveQuestion(formData);
+      const response = await saveQuestion(formData);
 
-      // Cập nhật danh sách câu hỏi
-      setQuestionsList([...questionsList, formData]);
+      // Cập nhật danh sách bằng cách gọi lại API
+      await getListQuestions();  
+
+      toast.success("Lưu thành công");
 
       // reset lại để tạo câu hỏi mới
       setQuestionType("single");
@@ -80,18 +89,21 @@ const CreateQuestion = () => {
       setOptions(["",""]);
       setCorrectAnswer([]);
 
-      toast.success("Lưu thành công");
-
     } catch (error) {
-      toast.error("Lỗi khi lưu câu hỏi");
-    }
+      console.error("Lỗi khi lưu câu hỏi:", error);    }
   }
+
+  // Quay về trang chỉnh sửa
+  const handleBackToEdit = () => {
+    navigate(`/workspace/exams/edit-question/${examId}`);
+  };
 
   return (
     <MainLayout>
       <Row className="d-flex justify-content-between align-items-center">
         <Col><h3 className="mb-4">Tạo câu hỏi</h3></Col>
         <Col className="text-end">
+        <button type="button" onClick={handleBackToEdit} className="btn-save">Quay lại chỉnh sửa</button>
         <button type="button" onClick={handleSaveQuestion} className="btn-save">Lưu câu hỏi</button>
         </Col>
       </Row>

@@ -33,9 +33,7 @@ const Header = () => {
       try {
         const infoUser = await getUser(); // Phản hồi từ gọi API
 
-        console.log("Dữ liệu API:", infoUser);
         setUser(infoUser)
-
         
       } catch (error) {
         console.error("Lỗi khi thấy thông tin người dùng:", error);

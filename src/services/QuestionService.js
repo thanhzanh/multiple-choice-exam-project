@@ -8,7 +8,9 @@ export const saveQuestion = async (formData) => {
         const res = await axios.post(`${API_URL}/create`, formData, {
             headers: { "Content-Type": "application/json" },
         });
-        return res.data;
+        console.log("Data:", res);
+        
+        return res;
     } catch (error) {
         console.error("Lỗi khi tạo câu hỏi", error);
         throw error;

@@ -5,12 +5,15 @@ import TinyMCEEditor from "../../components/TinyMCEEditor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import { editQuesion, getQuestionsByExam } from "../../services/QuestionService";
 
 import { useParams } from "react-router-dom"; // lấy id từ API phản hồi
 
 const EditQuestion = () => {
+  const navigate = useNavigate();
+
   const [questionType, setQuestionType] = useState("single"); // Loại câu hỏi
   const [questionText, setQuestionText] = useState(""); // Nội dung câu hỏi
   const [options, setOptions] = useState(["", ""]); // Danh sách đáp án (mặc định có 2 đáp án)
@@ -104,6 +107,7 @@ const EditQuestion = () => {
       <Row className="d-flex justify-content-between align-items-center">
         <Col><h3 className="mb-4">Chỉnh sửa câu hỏi</h3></Col>
         <Col className="text-end">
+        <button type="button" onClick={() => navigate(`/workspace/exams/create-question/${examId}`, { state: questionsList })} className="btn-save">Thêm câu hỏi</button>
         <button type="button" onClick={handleEditQuestion} className="btn-save">Chỉnh sửa câu hỏi</button>
         </Col>
       </Row>
@@ -134,7 +138,7 @@ const EditQuestion = () => {
           <Col md={8}>
             <Card>
               <Card.Body>
-                <h5>{ selectedQuestion ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi" }</h5>
+                <h5>Chỉnh sửa câu hỏi</h5>
                 <Form>
                   {/* Loại câu hỏi */}
                   <Form.Group className="mb-2">
