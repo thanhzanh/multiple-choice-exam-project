@@ -210,3 +210,10 @@
   font-size: 16px;
   color: gray;
 }
+
+
+/* kênh đề thi */
+.inner-avatar-name {
+  cursor: pointer;
+}
+

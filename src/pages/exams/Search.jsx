@@ -25,7 +25,7 @@ import {
   faTrash,
   faHistory,
   faPlay,
-  faUser
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { logoutAccount } from "../../services/AccountService";
@@ -34,9 +34,7 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-
 const API_URL = "http://localhost:3000/api/v1/exams";
-
 
 const Search = () => {
   const navigate = useNavigate(); // hooks để điều hướng
@@ -52,10 +50,10 @@ const Search = () => {
 
   const fetchSearchResults = async (keyword) => {
     try {
-        const response = await axios.get(`${API_URL}/search?keyword=${keyword}`);
+      const response = await axios.get(`${API_URL}/search?keyword=${keyword}`);
 
-      console.log("DANH SACH BAI THI", response.data);
-      
+      console.log("Data: ", response.data);
+
       setSearchResults(response.data);
     } catch (error) {
       console.error("Lỗi khi tìm kiếm:", error);
@@ -65,7 +63,6 @@ const Search = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const keyword = queryParams.get("keyword");
-    console.log(keyword);
 
     if (keyword) {
       setSearchKeyword(keyword);
@@ -86,7 +83,6 @@ const Search = () => {
     };
 
     getInfoUser();
-
   }, []);
 
   // Xử lý đăng xuất
@@ -127,14 +123,6 @@ const Search = () => {
                 md={8}
                 className="header-add-img d-flex justify-content-end align-items-center"
               >
-                <Button
-                  variant="primary"
-                  className="btn-create-exam"
-                  onClick={() => navigate("/workspace/exams/create-exam")}
-                >
-                  <FontAwesomeIcon icon={faSquarePlus} />
-                  <span className="header-title-create">Tạo đề thi</span>
-                </Button>
                 <div className="inner-profile">
                   <Image
                     className="btn-img-user-right"
@@ -179,7 +167,7 @@ const Search = () => {
       <div className="main-list-exam">
         <Card className="shadow-sm rounded">
           <Card.Header className="d-flex">
-            <p className="count-exam">1 đề thi</p>
+            <p className="count-exam">{searchResults.length} đề thi</p>
             <Form.Group className="d-flex header-search-exam">
               <Form.Control
                 type="text"
@@ -193,7 +181,7 @@ const Search = () => {
 
           <div className="d-flex flex-wrap">
             {searchResults.map((exam) => (
-              <div key={exam._id} style={{ width: "25%" }}>
+              <div key={exam._id} style={{ width: "20%" }}>
                 <Card className="shadow-sm item-exam">
                   <Card.Img
                     variant="top"
@@ -238,56 +226,18 @@ const Search = () => {
                         />
                         0
                       </span>
-                      <span>
-                        {exam.privacy === "private" ? (
-                          <FontAwesomeIcon
-                            icon={faShield}
-                            className="item-exam-icon"
-                            title="Riêng tư"
-                          />
-                        ) : (
-                          <FontAwesomeIcon
-                            icon={faEarthAmericas}
-                            className="item-exam-icon"
-                            title="Công khai"
-                          />
-                        )}
-                      </span>
-                      
                     </div>
-                    <p className="text-muted item-exam-create mt-2 mb-0">
-                      <FontAwesomeIcon
-                        icon={faUser}
-                        title="Người tạo"
-                        className="item-exam-icon"
-                      />
-                      {exam.createdBy.fullName}
+                    <p className="text-muted item-exam-create mt-2 mb-0 inner-avatar-name title='Xem kênh đề thi'">
+                      <Image
+                        src={exam.createdBy.avatar }
+                        roundedCircle
+                        title="Xem kênh đề thi"
+                        style={{ width: "30px", height: "30px", objectFit: "cover", marginRight: "10px" }}
+                      /> 
+                      <span title="Xem kênh đề thi">{exam.createdBy.fullName}</span>
                     </p>
                   </Card.Body>
-                  {/* Chức năng */}
                   <Card.Footer className="bg-white">
-                    <div className="d-flex justify-content-around mb-2 mt-2">
-                      <FontAwesomeIcon
-                        icon={faEdit}
-                        className="text-primary fs-5"
-                        onClick={() =>
-                          navigate(`/workspace/exams/edit-exam/${exam._id}`)
-                        }
-                        title="Chỉnh sửa"
-                      />
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        className="text-danger fs-5"
-                        title="Xóa"
-                      />
-                      <FontAwesomeIcon
-                        icon={faHistory}
-                        className="text-pink fs-5"
-                        title="Lịch sử truy cập"
-                      />
-                    </div>
-
-                    {/* Nút "Vào ôn thi" */}
                     <Button variant="primary" className="w-100 mt-3">
                       <FontAwesomeIcon icon={faPlay} /> Vào ôn thi
                     </Button>

@@ -19,6 +19,7 @@ import ResetPassword from "./pages/login/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/account/Profile";
 import Search from "./pages/exams/Search";
+import InfoExam from "./pages/exams/InfoExam";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -42,6 +43,7 @@ function App() {
             <Route path="/workspace/exams/create-exam" element={<CreateExam />} />
             <Route path="/workspace/exams/edit-exam/:examId" element={<EditExam />} />
             <Route path="/workspace/exams/list" element={<ListExams />} />    
+            <Route path="/exams/:slug" element={<InfoExam />} />    
           </Route>
           
           {/* Router Questions */}

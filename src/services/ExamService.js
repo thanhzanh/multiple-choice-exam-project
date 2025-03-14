@@ -77,7 +77,16 @@ export const getListEnumExam = async () => {
     return res.data;
 };
 
+// tìm kiếm đề thi trên kênh đề thi
 export const search = async (searchKeyword) => {
     const res = await axios.get(`${API_URL}/search?keyword=${searchKeyword}`);
+    return res;
+}
+
+// lấy đề thi theo slug
+export const getExamBySlug = async (slug) => {
+    const res = await axios.get(`${API_URL}/${slug}`);
+
+    console.log("Bai thi phan hoi: ", res.data);
     return res;
 }

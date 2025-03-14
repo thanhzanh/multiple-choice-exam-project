@@ -30,8 +30,6 @@ const ListExams = () => {
   const [countQuestion, setCountQuestion] = useState({});
   const [keyword, setKeyword] = useState("");
 
-  const { examId } = useParams();
-
   useEffect(() => {
     const getListExams = async () => {
       try {
@@ -41,6 +39,7 @@ const ListExams = () => {
         // gọi API đếm số câu hỏi cho từng bài thi
         const questionCounts = await Promise.all(
           examsList.map(async (exam) => {
+            
             const response = await countQuestionByExam(exam._id);
             return { examId: exam._id, totalQuestion: response.totalQuestion };
           })
@@ -64,6 +63,7 @@ const ListExams = () => {
     getListExams();
   }, [keyword]);
 
+  // Hàm xóa bài thi
   const handleDeleteExam = async (examId) => {
     const confirmDelete = window.confirm(
       "Bạn có chắc chắn muốn xóa đề thi này không?"
@@ -85,7 +85,7 @@ const ListExams = () => {
 
   return (
     <MainLayout>
-      <h4 className="mb-4">Danh sách bài viết</h4>
+      <h4 className="mb-4">Danh sách bài thi</h4>
 
       <div className="main-list-exam">
         <Card className="shadow-sm rounded">
@@ -112,6 +112,7 @@ const ListExams = () => {
                     src={`http://localhost:3000/uploads/${exam.image}`}
                     alt="Exam Image"
                     className="item-exam-img"
+                    onClick={() => window.open(`/exams/${exam.slug}`)}
                   />
                   <Card.Body className="">
                     <p className="item-exam-title">{exam.title}</p>
@@ -192,7 +193,7 @@ const ListExams = () => {
                     </div>
 
                     {/* Nút "Vào ôn thi" */}
-                    <Button variant="primary" className="w-100 mt-3">
+                    <Button variant="primary" className="w-100 mt-3" onClick={() => window.open(`/exams/${exam.slug}`)}>
                       <FontAwesomeIcon icon={faPlay} /> Vào ôn thi
                     </Button>
                   </Card.Footer>
