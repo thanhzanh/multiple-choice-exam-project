@@ -142,7 +142,7 @@ const Login = () => {
             </div>
           </div>
           <div className="d-flex justify-content-between">
-            <p onClick={() => navigate('/auth/forgot-password')} className="text-decoration-none text-primary">
+            <p onClick={() => navigate('/auth/forgot-password')} className="text-decoration-none text-primary" style={{ cursor: "pointer" }}>
               Quên mật khẩu?
             </p>
           </div>

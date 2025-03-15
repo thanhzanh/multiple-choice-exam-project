@@ -47,12 +47,9 @@ const Search = () => {
   const [searchResults, setSearchResults] = useState([]);
 
   // hàm tìm kiếm bài thi
-
   const fetchSearchResults = async (keyword) => {
     try {
       const response = await axios.get(`${API_URL}/search?keyword=${keyword}`);
-
-      console.log("Data: ", response.data);
 
       setSearchResults(response.data);
     } catch (error) {
@@ -105,17 +102,10 @@ const Search = () => {
           <Container fluid>
             <Row className="align-items-center header">
               <Col xs={12} md={4} className="header-info">
-                <Image
-                  src={user?.avatar}
-                  roundedCircle
-                  style={{ width: "50px", height: "50px", objectFit: "cover" }}
-                  className="header-info-img"
-                />
                 <div className="header-info-user">
-                  <span className="ml-2 font-weight-bold">
-                    {user ? user.fullName : "Đang tải..."}
+                  <span className="ml-2 font-weight-bold" style={{ fontSize: "26px" }}>
+                    QuizSTU
                   </span>
-                  <p>Kênh đề thi</p>
                 </div>
               </Col>
               <Col
@@ -134,7 +124,7 @@ const Search = () => {
                       objectFit: "cover",
                       cursor: "pointer",
                     }}
-                    onClick={() => setShowMenu(!showMenu)} // Toggle menu khi click
+                    onClick={() => setShowMenu(!showMenu)} 
                   />
                   {showMenu && (
                     <motion.ul
@@ -188,6 +178,7 @@ const Search = () => {
                     src={`http://localhost:3000/uploads/${exam.image}`}
                     alt="Exam Image"
                     className="item-exam-img"
+                    onClick={() => window.open(`/exams/${exam.slug}`)}
                   />
                   <Card.Body className="">
                     <p className="item-exam-title">{exam.title}</p>
@@ -205,7 +196,7 @@ const Search = () => {
                       <span>
                         <FontAwesomeIcon
                           icon={faQuestionCircle}
-                          className="text-warning item-exam-icon"
+                          className="text-warning inner-exam-icon"
                           title="Số câu hỏi"
                         />
                         0
@@ -213,7 +204,7 @@ const Search = () => {
                       <span>
                         <FontAwesomeIcon
                           icon={faChartSimple}
-                          className="text-primary item-exam-icon"
+                          className="text-primary inner-exam-icon"
                           title="Lượt xem"
                         />
                         0
@@ -221,7 +212,7 @@ const Search = () => {
                       <span>
                         <FontAwesomeIcon
                           icon={faBookOpen}
-                          className="text-success item-exam-icon"
+                          className="text-success inner-exam-icon"
                           title="Số lượt thi"
                         />
                         0
@@ -238,7 +229,7 @@ const Search = () => {
                     </p>
                   </Card.Body>
                   <Card.Footer className="bg-white">
-                    <Button variant="primary" className="w-100 mt-3">
+                    <Button variant="primary" className="w-100 mt-3" onClick={() => window.open(`/exams/${exam.slug}`)}>
                       <FontAwesomeIcon icon={faPlay} /> Vào ôn thi
                     </Button>
                   </Card.Footer>

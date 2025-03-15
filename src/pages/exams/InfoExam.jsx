@@ -20,6 +20,7 @@ import {
   faPlay,
   faFile,
   faHeart,
+  faCheck
 } from "@fortawesome/free-solid-svg-icons";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons/faThumbsUp";
 import image from "../../assets/exam-02.png";
@@ -32,6 +33,40 @@ import axios from "axios";
 import parse from "html-react-parser";
 
 const API_URL = "http://localhost:3000/api/v1/exams";
+
+const Flashcard = ({ question, options, answer, questionIndex  }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <div className="flashcard" onClick={() => setIsFlipped(!isFlipped)}>
+      <div className={`card-inner ${isFlipped ? "flipped" : ""}`}>
+        <div className="card-front d-flex flex-column justify-content-center align-items-center text-center">
+          <div className="d-flex">
+            <h5>{`Câu ${questionIndex + 1}`}. </h5>
+            <p style={{ fontSize: "18px" }}>{question ? parse(String(question)) : "Câu hỏi không có sẵn"}</p>
+          </div>
+          <ul className="options-list">
+            {
+              options.map((option, index) => [
+                <li key={index} className="d-flex text-left">
+                  <strong>{["A", "B", "C", "D"][index]}.</strong>
+                  { parse(String(option)) }
+                </li>
+              ])
+            }        
+          </ul>
+        </div>
+        <div className="card-back d-flex flex-column justify-content-center align-items-center">
+          <div className="answer-title">Đáp án đúng</div>
+          <div className="d-flex align-items-center answer-correct">
+            <FontAwesomeIcon icon={faCheck} className="answer-text-success" />
+            <span className="inner-answer-text">{answer ? parse(String(answer)) : "Câu trả lời chưa có sẵn"}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const InfoExam = () => {
   const navigate = useNavigate(); // hooks để điều hướng
@@ -47,13 +82,15 @@ const InfoExam = () => {
 
   const answerLabels = ["A", "B", "C", "D"]; // Danh sách ký hiệu đáp án
 
+  const [view, setView] = useState("home"); // home || flashcard
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   // Hàm lấy ra đề thi và câu hỏi
   useEffect(() => {
     const getExamData = async () => {
       try {
         const response = await axios.get(`${API_URL}/${slug}`);
-
-        console.log("Câu hỏi", response.data.questions);
 
         setExam(response.data.exam);
         setQuestions(response.data.questions);
@@ -159,125 +196,210 @@ const InfoExam = () => {
         </Navbar>
       </div>
 
-      <div className="container mt-4">
-        <Card className="p-3">
-          <Row>
-            <Col md={4}>
-              <img
-                src={image}
-                alt="Exam Thumbnail"
-                className="img-fluid rounded"
-              />
-            </Col>
-            <Col md={8}>
-              <h4>{exam?.title}</h4>
-              <p>
-                <img
-                  style={{
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "20px",
-                    marginRight: "10px",
-                  }}
-                  src={exam ? exam.createdBy.avatar : "Đang tải"}
-                  alt="Avatar"
-                />
-                <span>{exam?.createdBy.fullName}</span>
-              </p>
-              <p>
-                <FontAwesomeIcon icon={faClock} />
-                <span style={{ paddingLeft: "10px" }}>
-                  {exam
-                    ? moment(exam.createdAt).format("DD/MM/YYYY")
-                    : "Đang tải..."}
-                </span>
-              </p>
-              <div className="d-flex gap-3">
-                <span>
-                  <FontAwesomeIcon
-                    icon={faQuestionCircle}
-                    className="text-warning item-exam-icon"
-                    title="Số câu hỏi"
+      {view === "home" && (
+        <div>
+          <div className="container mt-4">
+            <Card className="p-3">
+              <Row>
+                <Col md={4}>
+                  <img
+                    src={image}
+                    alt="Exam Thumbnail"
+                    className="img-fluid rounded"
                   />
-                  {questions.length}
-                </span>
-                <span>
-                  <FontAwesomeIcon
-                    icon={faChartSimple}
-                    className="text-primary item-exam-icon"
-                    title="Lượt xem"
-                  />
-                  0
-                </span>
-                <span>
-                  <FontAwesomeIcon
-                    icon={faThumbsUp}
-                    className="item-exam-icon"
-                    title="Like"
-                  />
-                  0
-                </span>
-              </div>
-              <div className="d-flex gap-4 mt-3" style={{ fontSize: "20px" }}>
-                <span>
-                  <FontAwesomeIcon
-                    icon={faThumbsUp}
-                    className="item-exam-icon"
-                    title="Like"
-                  />
-                </span>
-                <span>
-                  <FontAwesomeIcon
-                    icon={faHeart}
-                    className="item-exam-icon"
-                    title="Tym"
-                  />
-                </span>
-              </div>
-              <p className="mt-3">
-                <strong>Trình độ:</strong> {exam ? exam.level : "Đang tải"}
-              </p>
-            </Col>
-          </Row>
-          <Row className="mt-3">
-            <Col md={6}>
-              <Button variant="primary" className="w-100">
-                <FontAwesomeIcon icon={faFile} />
-                <span style={{ marginLeft: "10px" }}>Thẻ ghi nhớ</span>
-              </Button>
-            </Col>
-            <Col md={6}>
-              <Button variant="primary" className="w-100">
-                <FontAwesomeIcon icon={faPlay} />
-                <span style={{ marginLeft: "10px" }}>Bắt đầu ôn thi</span>
-              </Button>
-            </Col>
-          </Row>
-        </Card>
-      </div>
+                </Col>
+                <Col md={8}>
+                  <h4>{exam?.title}</h4>
+                  <p>
+                    <img
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "20px",
+                        marginRight: "10px",
+                      }}
+                      src={exam ? exam.createdBy.avatar : "Đang tải"}
+                      alt="Avatar"
+                    />
+                    <span>{exam?.createdBy.fullName}</span>
+                  </p>
+                  <p>
+                    <FontAwesomeIcon icon={faClock} />
+                    <span style={{ paddingLeft: "10px" }}>
+                      {exam
+                        ? moment(exam.createdAt).format("DD/MM/YYYY")
+                        : "Đang tải..."}
+                    </span>
+                  </p>
+                  <div className="d-flex gap-3">
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faQuestionCircle}
+                        className="text-warning item-exam-icon"
+                        title="Số câu hỏi"
+                      />
+                      {questions.length}
+                    </span>
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faChartSimple}
+                        className="text-primary item-exam-icon"
+                        title="Lượt xem"
+                      />
+                      0
+                    </span>
+                    <span>
+                      <FontAwesomeIcon
+                        icon={faThumbsUp}
+                        className="item-exam-icon"
+                        title="Like"
+                      />
+                      0
+                    </span>
+                  </div>
+                  <div className="d-flex mt-3" style={{ fontSize: "20px" }}>
+                    <span className="inner-icon-like">
+                      <FontAwesomeIcon
+                        icon={faThumbsUp}
+                        className="inner-icon"
+                        title="Like"
+                      />
+                    </span>
+                    <span className="inner-icon-like">
+                      <FontAwesomeIcon
+                        icon={faHeart}
+                        className="inner-icon"
+                        title="Tym"
+                      />
+                    </span>
+                  </div>
+                  <p className="mt-3">
+                    <strong>Trình độ:</strong> {exam ? exam.level : "Đang tải"}
+                  </p>
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col md={6}>
+                  <Button
+                    variant="primary"
+                    className="w-100"
+                    onClick={() => setView("flashcard")}
+                  >
+                    <FontAwesomeIcon icon={faFile} />
+                    <span style={{ marginLeft: "10px" }}>Thẻ ghi nhớ</span>
+                  </Button>
+                </Col>
+                <Col md={6}>
+                  <Button variant="primary" className="w-100">
+                    <FontAwesomeIcon icon={faPlay} />
+                    <span style={{ marginLeft: "10px" }}>Bắt đầu ôn thi</span>
+                  </Button>
+                </Col>
+              </Row>
+            </Card>
+          </div>
 
-      <div className="container mt-4">
-        <Card className="p-3 mb-3">
-          <h5 style={{ borderBottom: "solid 1px #ccc", paddingBottom: "5px", color: "#645BFF", fontWeight: "400", textTransform: "uppercase" }}>Nội dung đề thi</h5>
-          {questions.map((question, index) => (
-            <div key={question._id} className="mt-3">
-              <p className="d-flex" style={{ marginBottom: "0px" }}>
-                <strong style={{ marginRight: "5px",}}>Câu {index + 1}: </strong> {parse(question.questionText)}
-              </p>
-              {/* Hiển thị danh sách lựa chọn nếu có */}
-              {question.options.length > 0 && (
-                <ul style={{ paddingLeft: "0px", paddingTop: "0px" }}>
-                  {question.options.map((option, i) => (
-                    <li key={i} className="d-flex">
-                      <strong>{answerLabels[i]}.</strong> {parse(option)}
-                    </li>
-                  ))}
-                </ul>
+          <div className="container mt-4">
+            <Card className="p-3 mb-3">
+              <h5
+                style={{
+                  borderBottom: "solid 1px #ccc",
+                  paddingBottom: "5px",
+                  color: "#645BFF",
+                  fontWeight: "400",
+                  textTransform: "uppercase",
+                }}
+              >
+                Nội dung đề thi
+              </h5>
+              {questions.length > 0 ? questions.map((question, index) => (
+                <div key={question._id} className="mt-3">
+                  <p style={{ marginBottom: "0px" }}>
+                    <strong style={{ marginRight: "5px", display: "flex" }}>
+                      Câu {index + 1}: {parse(question.questionText)}
+                    </strong>
+                  </p>
+                  {/* Hiển thị danh sách lựa chọn nếu có */}
+                  {question.options.length > 0 && (
+                    <ul style={{ paddingLeft: "0px", paddingTop: "0px" }}>
+                      {question.options.map((option, i) => (
+                        <li key={i} className="d-flex">
+                          <strong>{answerLabels[i]}.</strong> {parse(option)}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                )) : (
+                  <p>Đề thi chưa có câu hỏi nào</p>
+                )
+              }
+            </Card>
+          </div>
+        </div>
+      )}
+
+      {view === "flashcard" && (
+        <div className="container mt-4 mb-4">
+          <Row>
+            {/* Card bên trái */}
+            <Col md={4}>
+              <Card
+                className="flashcard"
+                style={{
+                  width: "100%",
+                  height: "500px",
+                  backgroundColor: "#ffffff", // Màu nền giống flashcard bên phải
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
+                  alignItems: "center",
+                  borderRadius: "10px",
+                  padding: "20px",
+                }}
+              >
+                <h5>Danh sách phần thi</h5>
+                <p>
+                  Hoàn thành {currentIndex}/{questions.length} câu
+                </p>
+                <Button variant="danger" onClick={() => setView("home")}>
+                  Trở về
+                </Button>
+              </Card>
+            </Col>
+
+            {/* Card bên phải - Chỉ hiển thị 1 câu hỏi */}
+            <Col
+              md={8}
+              className="justify-content-center align-items-center"
+            >
+              {questions.length > 0 && (
+                <Flashcard
+                  questionIndex={currentIndex} 
+                  question={questions[currentIndex]?.questionText}
+                  options={questions[currentIndex]?.options || []} // Các đáp án A, B, C, D
+                  answer={questions[currentIndex]?.correctAnswer} // Đáp án đúng
+                />
               )}
-            </div>
-          ))}
-        </Card>
-      </div>
+            </Col>
+          </Row>
+
+          {/* Nút chuyển câu hỏi */}
+          <div className="text-center mt-4">
+            <Button
+              variant="primary"
+              onClick={() =>
+                setCurrentIndex((prevIndex) =>
+                  prevIndex < questions.length - 1 ? prevIndex + 1 : 0
+                )
+              }
+            >
+              Tiếp theo
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

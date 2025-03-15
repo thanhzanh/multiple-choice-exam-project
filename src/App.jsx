@@ -32,12 +32,14 @@ function App() {
           <Route path="/" element={<HomeRedirect />} />
 
           {/* Router Login */}
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/auth/register" element={<Register />} />
-          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-          <Route path="/auth/otp-password" element={<OTPPassword />} />
-          <Route path="/auth/reset-password" element={<ResetPassword />} />
-
+          <Route element={<ProtectedRoute />}>
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
+            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth/otp-password" element={<OTPPassword />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
+          </Route>
+          
           {/* Router Exams */}
           <Route element={<ProtectedRoute/>}>
             <Route path="/workspace/exams/create-exam" element={<CreateExam />} />
@@ -58,7 +60,7 @@ function App() {
           </Route>
 
           {/* Router Search */}
-          <Route element={<Search/>}>
+          <Route element={<ProtectedRoute/>}>
             <Route path="/exams/search" element={<Search />} />
           </Route>
           
