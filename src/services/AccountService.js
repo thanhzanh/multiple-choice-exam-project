@@ -45,12 +45,26 @@ export const logoutAccount = async () => {
     }
 };
 
-// LLấy thông tin người dùng đăng nhập
+// Lấy thông tin người dùng đăng nhập
 export const getUser = async () => {
     try {
         const response = await axios.get(`${API_URL}/getUser`,
             { withCredentials: true }
-        );
+        );        
+        
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+// Lấy thông tin người dùng đăng nhập
+export const updateUser = async (dataUpdate) => {
+    try {
+        const response = await axios.put(`${API_URL}/profile/info`, dataUpdate,
+            { withCredentials: true }
+        );        
         
         return response.data;
     } catch (error) {

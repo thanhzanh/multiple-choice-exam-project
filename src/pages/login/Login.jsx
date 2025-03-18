@@ -2,22 +2,29 @@ import React, { useState } from "react";
 import banner from "../../assets/banner.png";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode"; // Giải mã token Google
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { loginAccount } from "../../services/AccountService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
 
+  const tokenUser = Cookies.get("token");
+  if (tokenUser) {
+    return <Navigate to="/workspace/exams/list" replace />;
+  }
+  
   // Xử lý đăng nhập bằng Google
   const handleGoogleSuccess = async (credentialResponse) => {
     const token = credentialResponse.credential;
-    const userInfo = jwtDecode(token); // Giải mã để xem thông tin user
+    
+    // const userInfo = jwtDecode(token); // Giải mã để xem thông tin user
     
     try {
       // Cách 1 dùng fetch

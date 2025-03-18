@@ -74,12 +74,17 @@ const Header = () => {
       <Container fluid>
         <Row className="align-items-center header">
           <Col xs={12} md={3} className="header-info">
-            <Image
-              src={user?.avatar || logo1}
-              roundedCircle
-              style={{ width: "50px", height: "50px", objectFit: "cover" }}
-              className="header-info-img"
-            />
+            {user && user.avatar ? (
+              <Image
+                src={user.avatar}
+                alt="Avatar"
+                roundedCircle
+                style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                className="header-info-img"
+              />
+            ) : (
+              <span>Đang tải...</span>
+            )}
             <div className="header-info-user">
               <span className="ml-2 font-weight-bold">
                 {user ? user.fullName : "Đang tải..."}
@@ -126,18 +131,22 @@ const Header = () => {
                 }}
                 onClick={() => setShowMenu(!showMenu)} // Toggle menu khi click
               />
-              {showMenu && ( 
+              {showMenu && (
                 <motion.ul
                   className="list-menu-profile"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: showMenu ? 1 : 0, y: showMenu ? 0 : -10 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
                 >
-                  <li>Thông tin tài khoản</li>
-                  <li onClick={() => {
-                    handleLogoutAccount();
-                    setShowMenu(false);
-                  }}>
+                  <li onClick={() => navigate('/account/profile')}>
+                    Thông tin tài khoản
+                  </li>
+                  <li
+                    onClick={() => {
+                      handleLogoutAccount();
+                      setShowMenu(false);
+                    }}
+                  >
                     <FontAwesomeIcon icon={faRightFromBracket} /> Đăng xuất
                   </li>
                 </motion.ul>
@@ -146,7 +155,7 @@ const Header = () => {
           </Col>
         </Row>
       </Container>
-    </Navbar> 
+    </Navbar>
   );
 };
 

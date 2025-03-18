@@ -31,8 +31,8 @@ function App() {
         <Routes>
           <Route path="/" element={<HomeRedirect />} />
 
-          {/* Router Login */}
-          <Route element={<ProtectedRoute />}>
+          {/* Router yêu cầu không đăng nhập */}
+          <Route element={<ProtectedRoute auth={true} />}>
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
             <Route path="/auth/forgot-password" element={<ForgotPassword />} />
@@ -40,28 +40,20 @@ function App() {
             <Route path="/auth/reset-password" element={<ResetPassword />} />
           </Route>
           
-          {/* Router Exams */}
-          <Route element={<ProtectedRoute/>}>
+          {/* Router yêu cầu đăng nhập */}
+          <Route element={<ProtectedRoute auth={false}/>}>
             <Route path="/workspace/exams/create-exam" element={<CreateExam />} />
             <Route path="/workspace/exams/edit-exam/:examId" element={<EditExam />} />
             <Route path="/workspace/exams/list" element={<ListExams />} />    
             <Route path="/exams/:slug" element={<InfoExam />} />    
-          </Route>
-          
-          {/* Router Questions */}
-          <Route element={<ProtectedRoute/>}>
+
             <Route path="/workspace/exams/create-question/:examId" element={<CreateQuestion />} />
             <Route path="/workspace/exams/edit-question/:examId" element={<EditQuestion />} />
-          </Route>
 
-          {/* Router Profile */}
-          <Route element={<ProtectedRoute/>}>
             <Route path="/account/profile" element={<Profile />} />
-          </Route>
 
-          {/* Router Search */}
-          <Route element={<ProtectedRoute/>}>
             <Route path="/exams/search" element={<Search />} />
+
           </Route>
           
         </Routes>
