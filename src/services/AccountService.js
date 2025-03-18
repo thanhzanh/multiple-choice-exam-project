@@ -71,3 +71,19 @@ export const updateUser = async (dataUpdate) => {
         throw error;
     }
 };
+
+// Thay đổi mật khẩu
+export const changePassword = async (dataChange) => {
+    try {
+        const response = await axios.post(`${API_URL}/profile/change-password`, 
+            dataChange,
+            { 
+                withCredentials: true,
+                headers: { "Content-Type": "application/json" },
+            }
+        );               
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
