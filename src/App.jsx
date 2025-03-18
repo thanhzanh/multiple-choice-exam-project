@@ -57,7 +57,7 @@ function App() {
           </Route>
           
         </Routes>
-        <ToastContainer />
+        <ToastContainer autoClose={2000}/>
       </Router>
     </GoogleOAuthProvider>
   );

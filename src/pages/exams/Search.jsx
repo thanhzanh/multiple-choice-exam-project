@@ -51,7 +51,22 @@ const Search = () => {
     try {
       const response = await axios.get(`${API_URL}/search?keyword=${keyword}`);
 
-      setSearchResults(response.data);
+      let exams = response.data;
+      // Gọi API đếm số câu hỏi cho từng bài thi
+      const updatedExams = await Promise.all(
+        exams.map( async(exam) => {
+          try {
+            const count = await axios.get(`http://localhost:3000/api/v1/questions/countQuestion/${exam._id}`);
+
+            return { ...exam, questionCount: count.data.totalQuestion }
+          } catch (error) {
+            console.error("Lỗi khi lấy số câu hỏi", error);
+            return { ...exam, questionCount: 0 } // Nếu lỗi thì mặc định là 0
+          }
+        })
+      )
+
+      setSearchResults(updatedExams);
     } catch (error) {
       console.error("Lỗi khi tìm kiếm:", error);
     }
@@ -199,7 +214,7 @@ const Search = () => {
                           className="text-warning inner-exam-icon"
                           title="Số câu hỏi"
                         />
-                        0
+                        {exam.questionCount}
                       </span>
                       <span>
                         <FontAwesomeIcon
