@@ -230,14 +230,17 @@
 }
 
 .inner-icon-like:hover {
-  background-color: #188BFF;
-  color: #fff;
+  background-color: #F5F5F5;
   border-radius: 50%;
   cursor: pointer;
 }
 
 .inner-icon-like .inner-icon {
   padding: 0px 5px;
+}
+
+.inner-icon.tymed {
+  color: red; /* Khi đã thích thì màu đỏ */
 }
 
 /* Flashcard */

@@ -16,7 +16,7 @@ const Sidebar = () => {
           <FontAwesomeIcon className='nav-icon' icon={faHouse} />
           Thư viện của tôi
         </Nav.Link>
-        <Nav.Link className='navbar-item' href="#">
+        <Nav.Link className='navbar-item' onClick={() => navigate('/personal/exams/favorite-exams')}>
           <FontAwesomeIcon className='nav-icon' icon={faHeart} />
           Đề thi yêu thích
           </Nav.Link>

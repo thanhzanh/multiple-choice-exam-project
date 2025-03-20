@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import moment from "moment";
 import "moment-timezone";
 import {
@@ -24,11 +23,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons/faThumbsUp";
 import image from "../../assets/exam-02.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { logoutAccount, getUser } from "../../services/AccountService";
-// import { getExamBySlug } from "../../services/ExamService";
+import { favoriteExam } from "../../services/ExamService";
+
 import axios from "axios";
 import parse from "html-react-parser";
 
@@ -80,11 +80,13 @@ const InfoExam = () => {
 
   const [questions, setQuestions] = useState([]);
 
-  const answerLabels = ["A", "B", "C", "D"]; // Danh sách ký hiệu đáp án
-
   const [view, setView] = useState("home"); // home || flashcard
 
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [favorite, setFavorite] = useState(false);
+
+  const answerLabels = ["A", "B", "C", "D"]; // Danh sách ký hiệu đáp án
 
   // Hàm lấy ra đề thi và câu hỏi
   useEffect(() => {
@@ -94,13 +96,30 @@ const InfoExam = () => {
 
         setExam(response.data.exam);
         setQuestions(response.data.questions);
+
+        if (user) {
+          setFavorite(user.favoriteExams.includes(response.data.exam._id));
+        }
+
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu bài thi:", error);
       }
     };
 
-    getExamData();
+    if (slug) {
+      getExamData();
+    }
   }, [slug]);
+
+  // Hàm thêm. xóa bài thi yêu thích
+  const toggleFavorite = async () => {
+    try {
+      await favoriteExam(exam._id);
+      setFavorite(prev => !prev);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật yêu thích", error);
+    }
+  }
 
   // Hàm lấy thông tin người dùng
   useEffect(() => {
@@ -246,7 +265,7 @@ const InfoExam = () => {
                         className="text-primary item-exam-icon"
                         title="Lượt xem"
                       />
-                      0
+                      { exam ? exam.views : 0 }
                     </span>
                     <span>
                       <FontAwesomeIcon
@@ -268,8 +287,9 @@ const InfoExam = () => {
                     <span className="inner-icon-like">
                       <FontAwesomeIcon
                         icon={faHeart}
-                        className="inner-icon"
+                        className={`inner-icon ${favorite ? "tymed" : ""}`}
                         title="Tym"
+                        onClick={toggleFavorite}
                       />
                     </span>
                   </div>
@@ -321,7 +341,7 @@ const InfoExam = () => {
                   </p>
                   {/* Hiển thị danh sách lựa chọn nếu có */}
                   {question.options.length > 0 && (
-                    <ul style={{ paddingLeft: "0px", paddingTop: "0px" }}>
+                    <ul style={{ paddingLeft: "0px", paddingTop: "0px", marginBottom: "0px" }}>
                       {question.options.map((option, i) => (
                         <li key={i} className="d-flex">
                           <strong>{answerLabels[i]}.</strong> {parse(option)}

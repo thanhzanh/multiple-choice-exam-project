@@ -90,3 +90,29 @@ export const getExamBySlug = async (slug) => {
     console.log("Bai thi phan hoi: ", res.data);
     return res;
 }
+
+// Đếm số lượng truy cập bài thi
+export const countViewsExam = async (slug) => {
+    const res = await axios.get(`${API_URL}/${slug}`);
+    return res;
+}
+
+// Tym/ bỏ tym bài thi yêu thích
+export const favoriteExam = async (examId) => {
+    const res = await axios.post(`${API_URL}/favorite/${examId}`, 
+        { },
+        { withCredentials: true }
+    );
+    return res;
+};
+
+export const listFavoriteExam = async () => {
+    try {
+        const res = await axios.get(`${API_URL}/favorite`, { withCredentials: true });
+
+        return res.data.favoriteExams;
+    } catch (error) {
+        console.error("Lỗi khi gọi API:", error.response?.data || error.message);
+        throw error;
+    }
+};
