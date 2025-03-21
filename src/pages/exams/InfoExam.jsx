@@ -237,8 +237,9 @@ const InfoExam = () => {
                         borderRadius: "20px",
                         marginRight: "10px",
                       }}
+                      referrerPolicy="no-referrer"
                       src={exam ? exam.createdBy.avatar : "Đang tải"}
-                      alt="Avatar"
+                      alt={exam?.createdBy?.fullName}
                     />
                     <span>{exam?.createdBy.fullName}</span>
                   </p>

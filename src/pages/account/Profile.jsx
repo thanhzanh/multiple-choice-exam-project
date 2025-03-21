@@ -137,7 +137,8 @@ const Profile = () => {
                 {user && (
                   <img
                     src={user.avatar.replace("s96-c", "s300-c")}
-                    alt="Avatar"
+                    alt={user.fullName}
+                    referrerPolicy="no-referrer"
                     roundedCircle
                     className="image-avatar"
                   />

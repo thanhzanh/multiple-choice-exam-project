@@ -106,9 +106,12 @@ export const favoriteExam = async (examId) => {
     return res;
 };
 
-export const listFavoriteExam = async () => {
+export const listFavoriteExam = async (keyword = "") => {
     try {
-        const res = await axios.get(`${API_URL}/favorite`, { withCredentials: true });
+        const res = await axios.get(`${API_URL}/favorite`, {
+            params: {keyword}, // Thêm query vào URL
+            withCredentials: true
+        });
 
         return res.data.favoriteExams;
     } catch (error) {

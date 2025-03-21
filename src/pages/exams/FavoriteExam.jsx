@@ -23,12 +23,14 @@ const FavoriteExam = () => {
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
   const [countQuestion, setCountQuestion] = useState({});
-  // const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
     const getFavoriteExams = async () => {
       try {
-        const response = await listFavoriteExam();
+        const response = await listFavoriteExam(keyword);
+
+        console.log("Dữ liệu: ", response);
 
         const examsList = response;
 
@@ -56,11 +58,11 @@ const FavoriteExam = () => {
     };
 
     getFavoriteExams();
-  }, []);
+  }, [keyword]);
 
   return (
     <MainLayout>
-      <h4 className="mb-4">Danh sách bài thi</h4>
+      <h4 className="mb-4">Danh sách bài thi yêu thích</h4>
 
       <div className="main-list-exam">
         <Card className="shadow-sm rounded">
@@ -71,8 +73,8 @@ const FavoriteExam = () => {
             <Form.Group className="d-flex header-search-exam">
               <Form.Control
                 type="text"
-                // value={keyword}
-                // onChange={(e) => setKeyword(e.target.value)}
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
                 placeholder="Nhập từ khóa tìm kiếm..."
                 className="me-2 header-search-input"
               />
@@ -139,9 +141,11 @@ const FavoriteExam = () => {
                           height: "30px",
                           borderRadius: "20px",
                           marginRight: "10px",
+                          objectFit: "cover",
                         }}
-                        src={exam ? exam.createdBy.avatar : "Đang tải"}
-                        alt="Avatar"
+                        referrerPolicy="no-referrer"
+                        src={exam ? exam.createdBy?.avatar : ""} 
+                        alt={exam.createdBy?.fullName} 
                       />
                       <span>{exam?.createdBy.fullName}</span>
                     </p>

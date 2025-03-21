@@ -191,7 +191,8 @@ const Search = () => {
                   <Card.Img
                     variant="top"
                     src={`http://localhost:3000/uploads/${exam.image}`}
-                    alt="Exam Image"
+                    alt={exam?.createdBy?.fullName}
+                    referrerPolicy="no-referrer"
                     className="item-exam-img"
                     onClick={() => window.open(`/exams/${exam.slug}`)}
                   />
