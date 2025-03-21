@@ -9,6 +9,8 @@ import {
   Col,
   Image,
   Card,
+  Modal,
+  Form
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,7 +21,7 @@ import {
   faPlay,
   faFile,
   faHeart,
-  faCheck
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons/faThumbsUp";
 import image from "../../assets/exam-02.png";
@@ -27,14 +29,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { logoutAccount, getUser } from "../../services/AccountService";
-import { favoriteExam } from "../../services/ExamService";
+import { favoriteExam, listFavoriteExam } from "../../services/ExamService";
+import PracticeTestModal from "../../components/PracticeModal";
 
 import axios from "axios";
 import parse from "html-react-parser";
 
 const API_URL = "http://localhost:3000/api/v1/exams";
 
-const Flashcard = ({ question, options, answer, questionIndex  }) => {
+const Flashcard = ({ question, options, answer, questionIndex }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
@@ -43,24 +46,26 @@ const Flashcard = ({ question, options, answer, questionIndex  }) => {
         <div className="card-front d-flex flex-column justify-content-center align-items-center text-center">
           <div className="d-flex">
             <h5>{`Câu ${questionIndex + 1}`}. </h5>
-            <p style={{ fontSize: "18px" }}>{question ? parse(String(question)) : "Câu hỏi không có sẵn"}</p>
+            <p style={{ fontSize: "18px" }}>
+              {question ? parse(String(question)) : "Câu hỏi không có sẵn"}
+            </p>
           </div>
           <ul className="options-list">
-            {
-              options.map((option, index) => [
-                <li key={index} className="d-flex text-left">
-                  <strong>{["A", "B", "C", "D"][index]}.</strong>
-                  { parse(String(option)) }
-                </li>
-              ])
-            }        
+            {options.map((option, index) => [
+              <li key={index} className="d-flex text-left">
+                <strong>{["A", "B", "C", "D"][index]}.</strong>
+                {parse(String(option))}
+              </li>,
+            ])}
           </ul>
         </div>
         <div className="card-back d-flex flex-column justify-content-center align-items-center">
           <div className="answer-title">Đáp án đúng</div>
           <div className="d-flex align-items-center answer-correct">
             <FontAwesomeIcon icon={faCheck} className="answer-text-success" />
-            <span className="inner-answer-text">{answer ? parse(String(answer)) : "Câu trả lời chưa có sẵn"}</span>
+            <span className="inner-answer-text">
+              {answer ? parse(String(answer)) : "Câu trả lời chưa có sẵn"}
+            </span>
           </div>
         </div>
       </div>
@@ -71,22 +76,21 @@ const Flashcard = ({ question, options, answer, questionIndex  }) => {
 const InfoExam = () => {
   const navigate = useNavigate(); // hooks để điều hướng
 
-  const [showMenu, setShowMenu] = useState(false);
-
-  const [user, setUser] = useState(null);
-
   const { slug } = useParams(); // Lấy slug từ url
+  const [showMenu, setShowMenu] = useState(false);
+  const [user, setUser] = useState(null);
   const [exam, setExam] = useState(null);
-
   const [questions, setQuestions] = useState([]);
-
   const [view, setView] = useState("home"); // home || flashcard
-
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [favorite, setFavorite] = useState(false);
-
   const answerLabels = ["A", "B", "C", "D"]; // Danh sách ký hiệu đáp án
+
+  const progress = (currentIndex / questions.length) * 100;
+
+  const [showModal, setShowModal] = useState(false);
+  const handleShow = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
 
   // Hàm lấy ra đề thi và câu hỏi
   useEffect(() => {
@@ -100,7 +104,6 @@ const InfoExam = () => {
         if (user) {
           setFavorite(user.favoriteExams.includes(response.data.exam._id));
         }
-
       } catch (error) {
         console.error("Lỗi khi tải dữ liệu bài thi:", error);
       }
@@ -111,15 +114,30 @@ const InfoExam = () => {
     }
   }, [slug]);
 
+  // Hàm check bài thi đã tym hay chưa
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (!exam._id) return;
+      try {
+        const favoriteExams = await listFavoriteExam();
+        const isFav = favoriteExams.some((ex) => ex._id === exam._id); // kiểm tra bài thi hiện tại có trong danh sách hay không
+        setFavorite(isFav);
+      } catch (error) {
+        console.error("Lỗi khi kiểm tra trạng thái yêu thích", error);
+      }
+    };
+    checkFavoriteStatus();
+  }, [exam?._id]);
+
   // Hàm thêm. xóa bài thi yêu thích
   const toggleFavorite = async () => {
     try {
       await favoriteExam(exam._id);
-      setFavorite(prev => !prev);
+      setFavorite((prev) => !prev);
     } catch (error) {
       console.error("Lỗi khi cập nhật yêu thích", error);
     }
-  }
+  };
 
   // Hàm lấy thông tin người dùng
   useEffect(() => {
@@ -266,7 +284,7 @@ const InfoExam = () => {
                         className="text-primary item-exam-icon"
                         title="Lượt xem"
                       />
-                      { exam ? exam.views : 0 }
+                      {exam ? exam.views : 0}
                     </span>
                     <span>
                       <FontAwesomeIcon
@@ -289,7 +307,7 @@ const InfoExam = () => {
                       <FontAwesomeIcon
                         icon={faHeart}
                         className={`inner-icon ${favorite ? "tymed" : ""}`}
-                        title="Tym"
+                        title={favorite ? "Bỏ tym" : "Thả tym"}
                         onClick={toggleFavorite}
                       />
                     </span>
@@ -311,7 +329,7 @@ const InfoExam = () => {
                   </Button>
                 </Col>
                 <Col md={6}>
-                  <Button variant="primary" className="w-100">
+                  <Button variant="primary" className="w-100" onClick={handleShow}>
                     <FontAwesomeIcon icon={faPlay} />
                     <span style={{ marginLeft: "10px" }}>Bắt đầu ôn thi</span>
                   </Button>
@@ -333,28 +351,35 @@ const InfoExam = () => {
               >
                 Nội dung đề thi
               </h5>
-              {questions.length > 0 ? questions.map((question, index) => (
-                <div key={question._id} className="mt-3">
-                  <p style={{ marginBottom: "0px" }}>
-                    <strong style={{ marginRight: "5px", display: "flex" }}>
-                      Câu {index + 1}: {parse(question.questionText)}
-                    </strong>
-                  </p>
-                  {/* Hiển thị danh sách lựa chọn nếu có */}
-                  {question.options.length > 0 && (
-                    <ul style={{ paddingLeft: "0px", paddingTop: "0px", marginBottom: "0px" }}>
-                      {question.options.map((option, i) => (
-                        <li key={i} className="d-flex">
-                          <strong>{answerLabels[i]}.</strong> {parse(option)}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                )) : (
-                  <p>Đề thi chưa có câu hỏi nào</p>
-                )
-              }
+              {questions.length > 0 ? (
+                questions.map((question, index) => (
+                  <div key={question._id} className="mt-3">
+                    <p style={{ marginBottom: "0px" }}>
+                      <strong style={{ marginRight: "5px", display: "flex" }}>
+                        Câu {index + 1}: {parse(question.questionText)}
+                      </strong>
+                    </p>
+                    {/* Hiển thị danh sách lựa chọn nếu có */}
+                    {question.options.length > 0 && (
+                      <ul
+                        style={{
+                          paddingLeft: "0px",
+                          paddingTop: "0px",
+                          marginBottom: "0px",
+                        }}
+                      >
+                        {question.options.map((option, i) => (
+                          <li key={i} className="d-flex">
+                            <strong>{answerLabels[i]}.</strong> {parse(option)}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p>Đề thi chưa có câu hỏi nào</p>
+              )}
             </Card>
           </div>
         </div>
@@ -371,7 +396,6 @@ const InfoExam = () => {
                   width: "100%",
                   height: "500px",
                   backgroundColor: "#ffffff", // Màu nền giống flashcard bên phải
-                  display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                   boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
@@ -382,22 +406,27 @@ const InfoExam = () => {
               >
                 <h5>Danh sách phần thi</h5>
                 <p>
-                  Hoàn thành {currentIndex}/{questions.length} câu
+                    Hoàn thành {currentIndex}/{questions.length} câu
                 </p>
-                <Button variant="danger" onClick={() => setView("home")}>
+                <div className="progress-container">
+                  <progress
+                    value={progress}
+                    max="100"
+                    className="progress-bar"
+                  ></progress>
+                  <span className="progress-text">{Math.round(progress)}%</span>
+                </div>
+                <Button variant="danger" className="mt-3" style={{ bottom: "0px" }} onClick={() => setView("home")}>
                   Trở về
                 </Button>
               </Card>
             </Col>
 
             {/* Card bên phải - Chỉ hiển thị 1 câu hỏi */}
-            <Col
-              md={8}
-              className="justify-content-center align-items-center"
-            >
+            <Col md={8} className="justify-content-center align-items-center">
               {questions.length > 0 && (
                 <Flashcard
-                  questionIndex={currentIndex} 
+                  questionIndex={currentIndex}
                   question={questions[currentIndex]?.questionText}
                   options={questions[currentIndex]?.options || []} // Các đáp án A, B, C, D
                   answer={questions[currentIndex]?.correctAnswer} // Đáp án đúng
@@ -421,6 +450,7 @@ const InfoExam = () => {
           </div>
         </div>
       )}
+      <PracticeTestModal show={showModal} handleClose={handleClose} />
     </div>
   );
 };

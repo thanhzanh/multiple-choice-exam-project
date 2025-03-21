@@ -62,7 +62,7 @@ const FavoriteExam = () => {
 
   return (
     <MainLayout>
-      <h4 className="mb-4">Danh sách bài thi yêu thích</h4>
+      <h4 className="mb-4">Bài thi yêu thích</h4>
 
       <div className="main-list-exam">
         <Card className="shadow-sm rounded">

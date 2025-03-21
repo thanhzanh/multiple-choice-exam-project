@@ -1,0 +1,35 @@
+/* Chi tiết bài thi */
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  appearance: none;
+}
+
+.progress-bar::-webkit-progress-bar {
+  background-color: #e0e0e0;
+  border-radius: 5px;
+}
+
+.progress-bar::-webkit-progress-value {
+  background-color: #4caf50;
+  border-radius: 5px;
+}
+
+.progress-bar::-moz-progress-bar {
+  background-color: #4caf50;
+  border-radius: 5px;
+}
+
+.progress-text {
+  font-weight: bold;
+  color: #333;
+  min-width: 40px;
+}
