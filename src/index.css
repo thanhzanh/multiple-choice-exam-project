@@ -34,13 +34,20 @@
 .navbar .navbar-item {
   color: #484848;
   padding: 12px 0px;
+  margin: 5px 0px;
   width: 100%;
 }
 
 .navbar .navbar-item:hover {
   color: #3E65FE;
   background-color: #EDF2FF;
-  border-radius: 20px;
+  border-radius: 10px;
+}
+
+.navbar .navbar-item.active {
+  color: #3E65FE;
+  background-color: #EDF2FF;
+  border-radius: 10px;
 }
 
 .navbar .navbar-item .nav-icon {
