@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ToastContainer } from "react-toastify";
+import { HelmetProvider } from "react-helmet-async";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,39 +29,41 @@ function App() {
   
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomeRedirect />} />
+      <HelmetProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomeRedirect />} />
 
-          {/* Router yêu cầu không đăng nhập */}
-          <Route element={<ProtectedRoute auth={true} />}>
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/register" element={<Register />} />
-            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-            <Route path="/auth/otp-password" element={<OTPPassword />} />
-            <Route path="/auth/reset-password" element={<ResetPassword />} />
-          </Route>
-          
-          {/* Router yêu cầu đăng nhập */}
-          <Route element={<ProtectedRoute auth={false}/>}>
-            <Route path="/workspace/exams/create-exam" element={<CreateExam />} />
-            <Route path="/workspace/exams/edit-exam/:examId" element={<EditExam />} />
-            <Route path="/workspace/exams/list" element={<ListExams />} />    
-            <Route path="/personal/exams/favorite-exams" element={<FavoriteExam />} />    
-            <Route path="/exams/:slug" element={<InfoExam />} />    
+            {/* Router yêu cầu không đăng nhập */}
+            <Route element={<ProtectedRoute auth={true} />}>
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/register" element={<Register />} />
+              <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+              <Route path="/auth/otp-password" element={<OTPPassword />} />
+              <Route path="/auth/reset-password" element={<ResetPassword />} />
+            </Route>
+            
+            {/* Router yêu cầu đăng nhập */}
+            <Route element={<ProtectedRoute auth={false}/>}>
+              <Route path="/workspace/exams/create-exam" element={<CreateExam />} />
+              <Route path="/workspace/exams/edit-exam/:examId" element={<EditExam />} />
+              <Route path="/workspace/exams/list" element={<ListExams />} />    
+              <Route path="/personal/exams/favorite-exams" element={<FavoriteExam />} />    
+              <Route path="/exams/:slug" element={<InfoExam />} />    
 
-            <Route path="/workspace/exams/create-question/:examId" element={<CreateQuestion />} />
-            <Route path="/workspace/exams/edit-question/:examId" element={<EditQuestion />} />
+              <Route path="/workspace/exams/create-question/:examId" element={<CreateQuestion />} />
+              <Route path="/workspace/exams/edit-question/:examId" element={<EditQuestion />} />
 
-            <Route path="/account/profile" element={<Profile />} />
+              <Route path="/account/profile" element={<Profile />} />
 
-            <Route path="/exams/search" element={<Search />} />
+              <Route path="/exams/search" element={<Search />} />
 
-          </Route>
-          
-        </Routes>
-        <ToastContainer autoClose={2000}/>
-      </Router>
+            </Route>
+            
+          </Routes>
+          <ToastContainer autoClose={2000}/>
+        </Router>
+      </HelmetProvider> 
     </GoogleOAuthProvider>
   );
 }

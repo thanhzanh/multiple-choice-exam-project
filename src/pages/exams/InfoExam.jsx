@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import moment from "moment";
 import "moment-timezone";
 import {
@@ -10,7 +11,7 @@ import {
   Image,
   Card,
   Modal,
-  Form
+  Form,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,7 +26,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons/faThumbsUp";
 import image from "../../assets/exam-02.png";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { logoutAccount, getUser } from "../../services/AccountService";
@@ -76,6 +77,15 @@ const Flashcard = ({ question, options, answer, questionIndex }) => {
 const InfoExam = () => {
   const navigate = useNavigate(); // hooks để điều hướng
 
+  // TAB
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabFromUrl = searchParams.get("tab") || "Nội dung đề thi"; // Mặc định là 'Nội dung đề thi'
+  const [activeTab, setActiveTab] = useState(tabFromUrl);
+  const indicatorRef = useRef(null);
+
+  const tabs = ["Nội dung đề thi", "Đánh giá", "Kết quả ôn tập", "Thống kê ôn tập"];
+  // END TAB
+
   const { slug } = useParams(); // Lấy slug từ url
   const [showMenu, setShowMenu] = useState(false);
   const [user, setUser] = useState(null);
@@ -91,6 +101,30 @@ const InfoExam = () => {
   const [showModal, setShowModal] = useState(false);
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+
+  // Hàm chuyển tab
+  useEffect(() => {
+    if (tabs.includes(tabFromUrl)) {
+      setActiveTab(tabFromUrl);
+      moveIndicator(tabFromUrl);
+    }
+  }, [searchParams]);
+
+  const moveIndicator = (tab) => {
+    const tabElement = document.querySelector(`.tab-item[data-tab="${tab}"]`);
+    if (tabElement && indicatorRef.current) {
+      indicatorRef.current.style.width = `${tabElement.offsetWidth}px`;
+      indicatorRef.current.style.left = `${tabElement.offsetLeft}px`;
+    }
+  };
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    moveIndicator(tab);
+    setSearchParams({ tab });
+  };
+
+  // end chuyển tab
 
   // Hàm lấy ra đề thi và câu hỏi
   useEffect(() => {
@@ -169,6 +203,10 @@ const InfoExam = () => {
 
   return (
     <div>
+      <Helmet>
+        <title>{exam ? exam.title : "QuizSTU"}</title>
+      </Helmet>
+
       <div className="header-search">
         <Navbar bg="light" expand="lg" className="px-3 inner-header">
           <Container fluid>
@@ -278,11 +316,10 @@ const InfoExam = () => {
                       />
                       {questions.length}
                     </span>
-                    <span>
+                    <span title="Lượt xem">
                       <FontAwesomeIcon
                         icon={faChartSimple}
-                        className="text-primary item-exam-icon"
-                        title="Lượt xem"
+                        className="text-primary item-exam-icon"                       
                       />
                       {exam ? exam.views : 0}
                     </span>
@@ -329,7 +366,11 @@ const InfoExam = () => {
                   </Button>
                 </Col>
                 <Col md={6}>
-                  <Button variant="primary" className="w-100" onClick={handleShow}>
+                  <Button
+                    variant="primary"
+                    className="w-100"
+                    onClick={handleShow}
+                  >
                     <FontAwesomeIcon icon={faPlay} />
                     <span style={{ marginLeft: "10px" }}>Bắt đầu ôn thi</span>
                   </Button>
@@ -340,46 +381,85 @@ const InfoExam = () => {
 
           <div className="container mt-4">
             <Card className="p-3 mb-3">
-              <h5
-                style={{
-                  borderBottom: "solid 1px #ccc",
-                  paddingBottom: "5px",
-                  color: "#645BFF",
-                  fontWeight: "400",
-                  textTransform: "uppercase",
-                }}
-              >
-                Nội dung đề thi
-              </h5>
-              {questions.length > 0 ? (
-                questions.map((question, index) => (
-                  <div key={question._id} className="mt-3">
-                    <p style={{ marginBottom: "0px" }}>
-                      <strong style={{ marginRight: "5px", display: "flex" }}>
-                        Câu {index + 1}: {parse(question.questionText)}
-                      </strong>
-                    </p>
-                    {/* Hiển thị danh sách lựa chọn nếu có */}
-                    {question.options.length > 0 && (
-                      <ul
-                        style={{
-                          paddingLeft: "0px",
-                          paddingTop: "0px",
-                          marginBottom: "0px",
-                        }}
-                      >
-                        {question.options.map((option, i) => (
-                          <li key={i} className="d-flex">
-                            <strong>{answerLabels[i]}.</strong> {parse(option)}
-                          </li>
-                        ))}
-                      </ul>
+              <div className="tabs-container">
+                <div className="tab-list">
+                  {tabs.map((tab) => (
+                    <div
+                      key={tab}
+                      className={`tab-item ${
+                        activeTab === tab ? "active" : ""
+                      }`}
+                      data-tab={tab}
+                      onClick={() => handleTabClick(tab)}
+                    >
+                      {tab}
+                    </div>
+                  ))}
+                  <div ref={indicatorRef} className="indicator"></div>
+                </div>
+              </div>
+
+              <div className="tab-content mt-3">
+                {/* Tab: Nội dung đề thi */}
+                {activeTab === "Nội dung đề thi" && (
+                  <div>
+                    {questions.length > 0 ? (
+                      questions.map((question, index) => (
+                        <div key={question._id} className="mt-3">
+                          <p style={{ marginBottom: "0px" }}>
+                            <strong
+                              style={{ marginRight: "5px", display: "flex" }}
+                            >
+                              Câu {index + 1}: {parse(question.questionText)}
+                            </strong>
+                          </p>
+                          {/* Hiển thị danh sách lựa chọn nếu có */}
+                          {question.options.length > 0 && (
+                            <ul
+                              style={{
+                                paddingLeft: "0px",
+                                paddingTop: "0px",
+                                marginBottom: "0px",
+                              }}
+                            >
+                              {question.options.map((option, i) => (
+                                <li key={i} className="d-flex">
+                                  <strong>{answerLabels[i]}.</strong>{" "}
+                                  {parse(option)}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <p>Đề thi chưa có câu hỏi nào</p>
                     )}
-                  </div>
-                ))
-              ) : (
-                <p>Đề thi chưa có câu hỏi nào</p>
-              )}
+                    <div style={{ padding: "5px", backgroundColor: "#EF6C00", color: "#ffff" }}>Bạn đang ở chế độ xem trước, hãy bắt đầu ôn thi ngay nhé</div>
+                  </div>      
+                )}
+
+                {/* Tab: Đánh giá */}
+                {
+                  activeTab === 'Đánh giá' && (
+                    <p>Nội dung đánh giá</p>
+                  )
+                }
+
+                {/* Tab: Kết quả học tập */}
+                {
+                  activeTab === 'Kết quả ôn tập' && (
+                    <p>Kết quả ôn tập</p>
+                  )
+                }
+
+                {/* Tab: Thống kê ôn tập */}
+                {
+                  activeTab === 'Thống kê ôn tập' && (
+                    <p>Nội dung Thống kê ôn tập</p>
+                  )
+                }
+              </div>
             </Card>
           </div>
         </div>
@@ -406,7 +486,8 @@ const InfoExam = () => {
               >
                 <h5>Danh sách phần thi</h5>
                 <p>
-                    Hoàn thành {currentIndex}/{questions.length} câu
+                  <strong>Tiến độ hoàn thành: </strong> 
+                  <span style={{ color: "#6797FE", fontWeight: "700" }}>{currentIndex}/{questions.length}</span>
                 </p>
                 <div className="progress-container">
                   <progress
@@ -416,7 +497,12 @@ const InfoExam = () => {
                   ></progress>
                   <span className="progress-text">{Math.round(progress)}%</span>
                 </div>
-                <Button variant="danger" className="mt-3" style={{ bottom: "0px" }} onClick={() => setView("home")}>
+                <Button
+                  variant="danger"
+                  className="mt-3"
+                  style={{ bottom: "0px" }}
+                  onClick={() => setView("home")}
+                >
                   Trở về
                 </Button>
               </Card>
