@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-const PracticeTestModal = ({ show, handleClose }) => {
+const PracticeModal = ({ show, handleClose }) => {
+  const navigate = useNavigate();
 
   return (
     <>
@@ -13,12 +15,6 @@ const PracticeTestModal = ({ show, handleClose }) => {
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className="d-flex" style={{ justifyContent: "space-around" }}>
-                <Form.Check type="radio" label="Ôn thi" name="mode" />
-                <Form.Check type="radio" label="Thi thử" name="mode" defaultChecked />
-            </Form.Group>
-
-            <hr />
 
             <Form.Check label="Giới hạn thời gian làm đề thi" defaultChecked readOnly/>
             <Form.Check label="Không hiển thị ngay đáp án" defaultChecked readOnly/>
@@ -44,15 +40,15 @@ const PracticeTestModal = ({ show, handleClose }) => {
               <Form.Control type="number" defaultValue={50} min={0} readOnly/>
             </Form.Group>
 
-            {/* <Form.Check label="Đảo câu hỏi" className="mt-2" />
-            <Form.Check label="Đảo đáp án" /> */}
+            <Form.Check label="Đảo câu hỏi" className="mt-2" />
+            <Form.Check label="Đảo đáp án" />
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Hủy
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={() => navigate("/exams/practice-exam")}>
             Xác nhận vào thi
           </Button>
         </Modal.Footer>
@@ -61,4 +57,4 @@ const PracticeTestModal = ({ show, handleClose }) => {
   );
 };
 
-export default PracticeTestModal;
+export default PracticeModal;

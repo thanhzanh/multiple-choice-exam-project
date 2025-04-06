@@ -22,6 +22,7 @@ import Profile from "./pages/account/Profile";
 import Search from "./pages/exams/Search";
 import InfoExam from "./pages/exams/InfoExam";
 import FavoriteExam from "./pages/exams/FavoriteExam";
+import ExamPage from "./pages/exams/ExamPage";
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -50,6 +51,7 @@ function App() {
               <Route path="/workspace/exams/list" element={<ListExams />} />    
               <Route path="/personal/exams/favorite-exams" element={<FavoriteExam />} />    
               <Route path="/exams/:slug" element={<InfoExam />} />    
+              <Route path="/exams/practice-exam" element={<ExamPage />} />    
 
               <Route path="/workspace/exams/create-question/:examId" element={<CreateQuestion />} />
               <Route path="/workspace/exams/edit-question/:examId" element={<EditQuestion />} />

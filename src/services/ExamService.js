@@ -12,6 +12,7 @@ export const createExam = async (formData) => {
             },
             withCredentials: true
         });
+
         return res.data;
     } catch (error) {
         console.error("Lỗi khi tạo đề thi", error);

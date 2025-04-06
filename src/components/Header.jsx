@@ -79,6 +79,7 @@ const Header = () => {
                 src={user.avatar}
                 alt="Avatar"
                 roundedCircle
+                referrerPolicy="no-referrer"
                 style={{ width: "50px", height: "50px", objectFit: "cover" }}
                 className="header-info-img"
               />
@@ -123,6 +124,7 @@ const Header = () => {
                 className="btn-img-user-right"
                 src={user?.avatar || logo1}
                 roundedCircle
+                referrerPolicy="no-referrer"
                 style={{
                   width: "60px",
                   height: "60px",

@@ -86,6 +86,7 @@ const CreateExam = () => {
     formData.append("status", exam.status);
 
     // Kiểm tra nếu có ảnh thì mới gửi
+    console.log(exam.image)
     if (exam.image) {
       formData.append("image", exam.image);
     }
