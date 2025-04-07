@@ -14,7 +14,8 @@ const PracticeModal = ({ show, handleClose, questions, exam }) => {
       state: {
         duration: duration,
         questions: questions,
-        title: exam.title
+        title: exam.title,
+        examId: exam._id,
       }
     });
   };

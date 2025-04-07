@@ -535,7 +535,7 @@ const InfoExam = () => {
           </div>
         </div>
       )}
-      <PracticeTestModal show={showModal} handleClose={handleClose} exam={exam} questions={questions} />
+      <PracticeTestModal show={showModal} handleClose={handleClose} exam={exam} questions={questions}/>
     </div>
   );
 };

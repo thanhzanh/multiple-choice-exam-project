@@ -4,9 +4,10 @@ import { Card, Button, Row, Col, ProgressBar, Navbar, Container, Image } from "r
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { getUser, loginAccount } from "../../services/AccountService";
 import { toast } from "react-toastify";
 import parse from "html-react-parser";
+import { getUser, loginAccount } from "../../services/AccountService";
+import { submitExam } from "../../services/ResultService";
 
 const ExamPage = () => {
   
@@ -17,7 +18,7 @@ const ExamPage = () => {
 
     const navigate = useNavigate(); // dùng để điều hướng
     const location = useLocation(); // dùng nhận dữ liệu từ state
-    const { duration, questions, title } = location.state || {};
+    const { duration, questions, title, examId } = location.state || {};
     const [timeLeft, setTimeLeft] = useState(duration * 60);
 
     const totalQuestions = questions.length; // Tổng số câu hỏi
@@ -36,13 +37,18 @@ const ExamPage = () => {
     // End xử lý scroll đến câu hỏi
 
     // Hàm xử lý thời gian
-    useEffect(() => {      
+    useEffect(() => {  
+        if (timeLeft === 0) {
+            toast.success("Hết giờ làm bài");
+            handleSubmitExam();
+        }
+        
         const timer = setInterval(() => {
             setTimeLeft(prev => (prev > 0 ? prev - 1 : 0)); // giảm 1s mỗi lần
         }, 1000);
 
         return () => clearInterval(timer);
-    }, []);
+    }, [timeLeft]);
 
     let formatTime = (seconds) => {
         let minute = Math.floor(seconds / 60).toString().padStart(2, '0'); // padStart(2, '0') giúp hiển thị 09 thay vì 9.
@@ -55,7 +61,7 @@ const ExamPage = () => {
     const getInfoUser = async () => {
         try {
         const infoUser = await getUser(); // Phản hồi từ gọi API
-
+        
         setUser(infoUser);
         } catch (error) {
         console.error("Lỗi khi thấy thông tin người dùng:", error);
@@ -63,7 +69,7 @@ const ExamPage = () => {
     };
 
     getInfoUser();
-    }, []);
+    }, [user]);
 
     // Hàm xử lý bấm thay đổi câu hỏi
     const handleAnswerChange = (questionId, option) => {
@@ -76,6 +82,26 @@ const ExamPage = () => {
         toast.success('Đăng xuất thành công');
         navigate('auth/login');
     }
+
+    // Hàm xử lý chức năng nộp bài
+    const handleSubmitExam = async() => {
+        const formData = {
+            userId: user ? user._id : "",
+            examId: examId,
+            timeSelected: duration, 
+            answers: Object.entries(answers).map(([questionId, selectedOption]) => ({
+                questionId,
+                selectedOption
+            }))
+        }
+
+        try {
+            await submitExam(formData);
+            toast.success("Nộp bài thành công");
+        } catch (error) {
+            console.error("Lỗi khi nộp bài", error);
+        }
+    };
 
     return (
         <>
@@ -158,7 +184,7 @@ const ExamPage = () => {
                                 <span className="text-primary"><strong>{formatTime(timeLeft)}</strong></span>
                             </div> 
                             <Button variant="danger" className="me-2">Trở về</Button>
-                            <Button variant="primary">Nộp bài</Button>
+                            <Button onClick={handleSubmitExam} variant="primary">Nộp bài</Button>
                         </Card.Body>
                         <Card.Body>
                             <h6>Tiến độ hoàn thành</h6>
