@@ -8,10 +8,10 @@ const TinyMCEEditor = ({ value, onChange }) => {
       value={value}
       init={{
         height: 190,
-        menubar: false,
-        plugins: "advlist autolink lists link charmap print preview anchor",
+        menubar: true,
+        plugins: "advlist autolink lists link image charmap print preview anchor",
         toolbar:
-          "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | print preview",
+          "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image | print preview",
       }}
       onEditorChange={onChange}
     />

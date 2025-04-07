@@ -52,7 +52,7 @@ const PracticeModal = ({ show, handleClose, questions, exam }) => {
 
             <Form.Group className="mt-3">
               <Form.Label>Số câu hỏi thi</Form.Label>
-              <Form.Control type="number" defaultValue={50} min={0} readOnly/>
+              <Form.Control type="number" value={questions.length} min={0} readOnly/>
             </Form.Group>
 
             <Form.Check label="Đảo câu hỏi" className="mt-2" />

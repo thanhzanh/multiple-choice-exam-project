@@ -252,7 +252,7 @@ const InfoExam = () => {
                       transition={{ duration: 0.3, ease: "easeOut" }}
                     >
                       <li onClick={() => navigate('/account/profile')}>Hồ sơ cá nhân</li>
-                      <li onClick={() => navigate('workspace/exams/list')}>Đề thi cá nhân</li>
+                      <li onClick={() => navigate('/workspace/exams/list')}>Đề thi cá nhân</li>
                       <li
                         onClick={() => {
                           handleLogoutAccount();

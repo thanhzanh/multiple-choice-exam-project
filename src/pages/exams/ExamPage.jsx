@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import parse from "html-react-parser";
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import { getUser, loginAccount } from "../../services/AccountService";
 import { submitExam } from "../../services/ResultService";
 
@@ -97,10 +99,46 @@ const ExamPage = () => {
 
         try {
             await submitExam(formData);
-            toast.success("Nộp bài thành công");
+            confirmAlert({
+                title: 'Xác nhận nộp bài',
+                message: 'Bạn có chắc chắn muốn nộp bài.',
+                buttons: [
+                  {
+                    label: 'Có',
+                    onClick: () => {
+                        toast.success("Nộp bài thành công");
+                        navigate('/workspace/exams/list');
+                    }
+                  },
+                  {
+                    label: 'Không',
+                    onClick: () => {},
+                  }
+                ]
+            });
+            
         } catch (error) {
             console.error("Lỗi khi nộp bài", error);
         }
+    };
+
+    // Hàm xử lý nút thoát
+    const handleBack = () => {
+        confirmAlert({
+            message: 'Bạn có chắc chắn muốn rời khỏi bài thi? Mọi câu trả lời chưa nộp sẽ bị mất.',
+            buttons: [
+              {
+                label: 'Rời khỏi',
+                onClick: () => navigate(-1), // Về lại chi tiết đề thi
+              },
+              {
+                label: 'Tiếp tục làm bài',
+                onClick: () => {}, // Không làm gì cả
+              }
+            ],
+            closeOnEscape: true,
+            closeOnClickOutside: false,
+        });
     };
 
     return (
@@ -183,7 +221,7 @@ const ExamPage = () => {
                                 <strong>Thời gian còn lại</strong>
                                 <span className="text-primary"><strong>{formatTime(timeLeft)}</strong></span>
                             </div> 
-                            <Button variant="danger" className="me-2">Trở về</Button>
+                            <Button onClick={handleBack} variant="danger" className="me-2">Trở về</Button>
                             <Button onClick={handleSubmitExam} variant="primary">Nộp bài</Button>
                         </Card.Body>
                         <Card.Body>
