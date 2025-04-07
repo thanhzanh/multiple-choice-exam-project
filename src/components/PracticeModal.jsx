@@ -2,8 +2,22 @@ import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const PracticeModal = ({ show, handleClose }) => {
+const PracticeModal = ({ show, handleClose, questions, exam }) => {
+  
   const navigate = useNavigate();
+  // Thời gian làm bài
+  const [duration, setDuration] = useState(30);
+
+  // Hàm xử lý khi bấm vào "Xác nhận vào thi"
+  const handleConfirm = () => {
+    navigate('/exams/practice-exam', {
+      state: {
+        duration: duration,
+        questions: questions,
+        title: exam.title
+      }
+    });
+  };
 
   return (
     <>
@@ -25,7 +39,7 @@ const PracticeModal = ({ show, handleClose }) => {
             <h6>Cài đặt đề thi</h6>
             <Form.Group>
               <Form.Label>Thời gian làm bài thi</Form.Label>
-                <Form.Select>
+                <Form.Select value={duration} onChange={(e) => setDuration(Number(e.target.value))}>
                     <option value={5}>5 phút</option>
                     <option value={10}>10 phút</option>
                     <option value={15}>15 phút</option>
@@ -48,7 +62,7 @@ const PracticeModal = ({ show, handleClose }) => {
           <Button variant="secondary" onClick={handleClose}>
             Hủy
           </Button>
-          <Button variant="primary" onClick={() => navigate("/exams/practice-exam")}>
+          <Button variant="primary" onClick={handleConfirm}>
             Xác nhận vào thi
           </Button>
         </Modal.Footer>

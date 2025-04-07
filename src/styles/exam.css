@@ -63,3 +63,36 @@
   background-color: #007bff; /* Màu thanh indicator */
   transition: left 0.3s ease, width 0.3s ease;
 }
+
+/* Làm Bài thi */
+
+/* Sticky cards for both columns */
+.sticky-card {
+  position: sticky;
+  top: 70px; /* Adjust based on your header height */
+  max-height: calc(100vh - 90px); /* Viewport height minus header and some padding */
+  overflow-y: auto; /* Allow scrolling within the card if content is long */
+}
+
+/* Optional: Add scrollbar styling for the sticky cards */
+.sticky-card::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sticky-card::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+/* Optional: Add a container for the main content area */
+.exam-content {
+  height: 100%;
+  overflow-y: auto;
+}
+
+
+/* Ensure the main content column can scroll independently */
+.main-exam-content {
+  overflow-y: auto;
+  max-height: calc(100vh - 90px);
+}

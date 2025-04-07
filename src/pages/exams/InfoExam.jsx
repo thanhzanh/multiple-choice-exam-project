@@ -10,8 +10,6 @@ import {
   Col,
   Image,
   Card,
-  Modal,
-  Form,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -537,7 +535,7 @@ const InfoExam = () => {
           </div>
         </div>
       )}
-      <PracticeTestModal show={showModal} handleClose={handleClose} />
+      <PracticeTestModal show={showModal} handleClose={handleClose} exam={exam} questions={questions} />
     </div>
   );
 };
