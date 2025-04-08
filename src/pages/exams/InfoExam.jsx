@@ -10,8 +10,10 @@ import {
   Col,
   Image,
   Card,
+  Form,
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ReactStars from "react-rating-stars-component";
 import {
   faRightFromBracket,
   faClock,
@@ -33,6 +35,7 @@ import PracticeTestModal from "../../components/PracticeModal";
 
 import axios from "axios";
 import parse from "html-react-parser";
+import { postComment, getCommentsByExamId } from "../../services/CommentService";
 
 const API_URL = "http://localhost:3000/api/v1/exams";
 
@@ -42,21 +45,35 @@ const Flashcard = ({ question, options, answer, questionIndex }) => {
   return (
     <div className="flashcard" onClick={() => setIsFlipped(!isFlipped)}>
       <div className={`card-inner ${isFlipped ? "flipped" : ""}`}>
-        <div className="card-front d-flex flex-column justify-content-center align-items-center text-center">
-          <div className="d-flex">
-            <h5>{`Câu ${questionIndex + 1}`}. </h5>
-            <p style={{ fontSize: "18px" }}>
+        <div
+          className="card-front d-flex flex-column justify-content-center align-items-center text-center"
+          style={{ margin: "0px 20px" }}
+        >
+          <div className="d-flex text-left" style={{ minWidth: "700px" }}>
+            <p style={{ width: "100px" }}>{`Câu ${questionIndex + 1}`}. </p>
+            <div
+              style={{
+                fontSize: "16px",
+                textAlign: "left",
+                marginBottom: "0px",
+              }}
+            >
               {question ? parse(String(question)) : "Câu hỏi không có sẵn"}
-            </p>
+            </div>
           </div>
-          <ul className="options-list">
-            {options.map((option, index) => [
-              <li key={index} className="d-flex text-left">
-                <strong>{["A", "B", "C", "D"][index]}.</strong>
-                {parse(String(option))}
-              </li>,
-            ])}
-          </ul>
+          <div style={{ minWidth: "700px" }}>
+            <ul
+              className="options-list"
+              style={{ padding: "0px", paddingLeft: "20px" }}
+            >
+              {options.map((option, index) => [
+                <li key={index} className="d-flex text-left">
+                  <strong>{["A", "B", "C", "D"][index]}.</strong>
+                  {parse(String(option))}
+                </li>,
+              ])}
+            </ul>
+          </div>
         </div>
         <div className="card-back d-flex flex-column justify-content-center align-items-center">
           <div className="answer-title">Đáp án đúng</div>
@@ -81,7 +98,12 @@ const InfoExam = () => {
   const [activeTab, setActiveTab] = useState(tabFromUrl);
   const indicatorRef = useRef(null);
 
-  const tabs = ["Nội dung đề thi", "Đánh giá", "Kết quả ôn tập", "Thống kê ôn tập"];
+  const tabs = [
+    "Nội dung đề thi",
+    "Đánh giá",
+    "Kết quả ôn tập",
+    "Thống kê ôn tập",
+  ];
   // END TAB
 
   const { slug } = useParams(); // Lấy slug từ url
@@ -93,6 +115,10 @@ const InfoExam = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [favorite, setFavorite] = useState(false);
   const answerLabels = ["A", "B", "C", "D"]; // Danh sách ký hiệu đáp án
+
+  const [rating, setRating] = useState(0);
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState([]);
 
   const progress = (currentIndex / questions.length) * 100;
 
@@ -199,6 +225,51 @@ const InfoExam = () => {
     }
   };
 
+  // Xử lý thay đổi rating (comment)
+  const handleChangeRating = (newRating) => setRating(newRating);
+
+  // Hàm xử lý bình luận
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    if (!commentText) {
+      toast.info("Vui lòng nhập đánh giá");
+      return;
+    };
+
+    try {
+      const data = {
+        examId: exam._id,
+        userId: user?._id,
+        comment_text: commentText,
+        rating,
+      };
+      await postComment(data);
+
+      // Gọi lại API để lấy danh sách đầy đủ đã populate
+      const updatedComments = await getCommentsByExamId(exam._id);
+      setComments(updatedComments); // cập nhật lại giao diện
+
+      // Reset form
+      setCommentText("");
+      setRating(0);
+    } catch (err) {
+      console.error("Lỗi khi gửi bình luận:", err);
+    }
+  };
+
+  // Hàm xử lý lấy bình luận
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const data = await getCommentsByExamId(exam._id);
+        setComments(data);
+      } catch (err) {
+        console.error("Lỗi khi lấy bình luận:", err);
+      }
+    };
+    fetchComments();
+  }, [exam ? exam._id : ""]);
+
   return (
     <div>
       <Helmet>
@@ -251,8 +322,12 @@ const InfoExam = () => {
                       }}
                       transition={{ duration: 0.3, ease: "easeOut" }}
                     >
-                      <li onClick={() => navigate('/account/profile')}>Hồ sơ cá nhân</li>
-                      <li onClick={() => navigate('/workspace/exams/list')}>Đề thi cá nhân</li>
+                      <li onClick={() => navigate("/account/profile")}>
+                        Hồ sơ cá nhân
+                      </li>
+                      <li onClick={() => navigate("/workspace/exams/list")}>
+                        Đề thi cá nhân
+                      </li>
                       <li
                         onClick={() => {
                           handleLogoutAccount();
@@ -318,7 +393,7 @@ const InfoExam = () => {
                     <span title="Lượt xem">
                       <FontAwesomeIcon
                         icon={faChartSimple}
-                        className="text-primary item-exam-icon"                       
+                        className="text-primary item-exam-icon"
                       />
                       {exam ? exam.views : 0}
                     </span>
@@ -434,30 +509,89 @@ const InfoExam = () => {
                     ) : (
                       <p>Đề thi chưa có câu hỏi nào</p>
                     )}
-                    <div style={{ padding: "5px", backgroundColor: "#EF6C00", color: "#ffff" }}>Bạn đang ở chế độ xem trước, hãy bắt đầu ôn thi ngay nhé</div>
-                  </div>      
+                    <div
+                      style={{
+                        padding: "5px",
+                        backgroundColor: "#EF6C00",
+                        color: "#ffff",
+                      }}
+                    >
+                      Bạn đang ở chế độ xem trước, hãy bắt đầu ôn thi ngay nhé
+                    </div>
+                  </div>
                 )}
 
                 {/* Tab: Đánh giá */}
-                {
-                  activeTab === 'Đánh giá' && (
-                    <p>Nội dung đánh giá</p>
-                  )
-                }
+                {activeTab === "Đánh giá" && (
+                  <div>
+                    <Form onSubmit={handleSubmitComment}>
+                      <Form.Group>
+                        <Form.Label>Đánh giá đề thi</Form.Label>
+                        <ReactStars
+                          onChange={handleChangeRating}
+                          count={5}
+                          value={rating}
+                          size={24}
+                          activeColor="#ffd700"
+                        />
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label className="mt-2">Bình luận</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          style={{ paddingBottom: "100px" }}
+                        />
+                      </Form.Group>
+                      <Button className="mt-3" type="submit">
+                        Gửi bình luận
+                      </Button>
+                    </Form>
+                    <div className="mt-4">
+                      <h5>Bình luận của người dùng</h5>
+                      {comments.length === 0 ? (
+                        <p>Chưa có bình luận nào.</p>
+                      ) : (
+                        comments.map((comment, index) => (
+                          <div key={index} className="border p-2 mb-3 rounded">
+                            <div className="d-flex align-items-center mb-2">
+                              <img
+                                src={comment?.userId?.avatar}
+                                alt="avatar"
+                                className="rounded-circle"
+                                width="40"
+                                height="40"
+                                style={{
+                                  objectFit: "cover",
+                                  marginRight: "10px",
+                                }}
+                              />
+                              <strong>{comment?.userId?.fullName}</strong>
+                            </div>
+                            <p>{moment(comment.createdAt).format("DD/MM/YYYY")}</p>
+                            <ReactStars
+                              value={comment.rating}
+                              count={5}
+                              edit={false}
+                              size={20}
+                              activeColor="#ffd700"
+                            />
+                            <p className="mt-2">{comment.comment_text}</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Tab: Kết quả học tập */}
-                {
-                  activeTab === 'Kết quả ôn tập' && (
-                    <p>Kết quả ôn tập</p>
-                  )
-                }
+                {activeTab === "Kết quả ôn tập" && <p>Kết quả ôn tập</p>}
 
                 {/* Tab: Thống kê ôn tập */}
-                {
-                  activeTab === 'Thống kê ôn tập' && (
-                    <p>Nội dung Thống kê ôn tập</p>
-                  )
-                }
+                {activeTab === "Thống kê ôn tập" && (
+                  <p>Nội dung Thống kê ôn tập</p>
+                )}
               </div>
             </Card>
           </div>
@@ -485,8 +619,10 @@ const InfoExam = () => {
               >
                 <h5>Danh sách phần thi</h5>
                 <p>
-                  <strong>Tiến độ hoàn thành: </strong> 
-                  <span style={{ color: "#6797FE", fontWeight: "700" }}>{currentIndex}/{questions.length}</span>
+                  <strong>Tiến độ hoàn thành: </strong>
+                  <span style={{ color: "#6797FE", fontWeight: "700" }}>
+                    {currentIndex}/{questions.length}
+                  </span>
                 </p>
                 <div className="progress-container">
                   <progress
@@ -535,7 +671,12 @@ const InfoExam = () => {
           </div>
         </div>
       )}
-      <PracticeTestModal show={showModal} handleClose={handleClose} exam={exam} questions={questions}/>
+      <PracticeTestModal
+        show={showModal}
+        handleClose={handleClose}
+        exam={exam}
+        questions={questions}
+      />
     </div>
   );
 };
