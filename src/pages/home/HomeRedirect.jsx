@@ -14,7 +14,12 @@ const HomeRedirect = () => {
                 await axios.get(`${API_URL}/getUser`, { withCredentials: true });
 
                 // Nếu có token hợp lệ => Chuyển đến danh sách đề thi
-                navigate('/workspace/exams/list');
+                if (response.status === 200 && response.data) {
+                    console.log("Xác thực thành công:", response.data);
+                    navigate("/workspace/exams/list");
+                } else {
+                    throw new Error("Không xác thực được người dùng");
+                }
             } catch (error) {
                 console.error("Không có token hoặc token không hợp lệ:", error);
 
