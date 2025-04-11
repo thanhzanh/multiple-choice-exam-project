@@ -24,8 +24,7 @@ export const loginAccount = async (userData) => {
             JSON.stringify(userData),
             { 
                 withCredentials: true,
-                headers: { "Content-Type": "application/json" },
-            
+                headers: { "Content-Type": "application/json" },           
             });        
         return response;
     } catch (error) {
