@@ -85,7 +85,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/users/profile/change-password",
+        "https://server-multiple-choice-exam-production.up.railway.app/api/v1/users/profile/change-password",
         passwords,
         { withCredentials: true }
       );
