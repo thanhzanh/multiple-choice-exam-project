@@ -34,7 +34,7 @@ import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/v1/exams";
+const API_URL = "https://server-multiple-choice-exam-production.up.railway.app/api/v1/exams";
 
 const Search = () => {
   const navigate = useNavigate(); // hooks để điều hướng
@@ -56,7 +56,7 @@ const Search = () => {
       const updatedExams = await Promise.all(
         exams.map( async(exam) => {
           try {
-            const count = await axios.get(`http://localhost:3000/api/v1/questions/countQuestion/${exam._id}`);
+            const count = await axios.get(`https://server-multiple-choice-exam-production.up.railway.app/api/v1/questions/countQuestion/${exam._id}`);
 
             return { ...exam, questionCount: count.data.totalQuestion }
           } catch (error) {

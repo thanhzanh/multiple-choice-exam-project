@@ -30,8 +30,6 @@ const FavoriteExam = () => {
       try {
         const response = await listFavoriteExam(keyword);
 
-        console.log("Dữ liệu: ", response);
-
         const examsList = response;
 
         // gọi API đếm số câu hỏi cho từng bài thi

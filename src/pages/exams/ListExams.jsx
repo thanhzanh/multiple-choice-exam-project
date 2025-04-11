@@ -109,7 +109,7 @@ const ListExams = () => {
                 <Card className="shadow-sm item-exam">
                   <Card.Img
                     variant="top"
-                    src={`http://localhost:3000/uploads/${exam.image}`}
+                    src={`https://server-multiple-choice-exam-production.up.railway.app/uploads/${exam.image}`}
                     alt="Exam Image"
                     className="item-exam-img"
                     onClick={() => window.open(`/exams/${exam.slug}`)}

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/v1/comments";
+const API_URL = "https://server-multiple-choice-exam-production.up.railway.app/api/v1/comments";
 
 // Gửi bình luận
 export const postComment = async (data) => {

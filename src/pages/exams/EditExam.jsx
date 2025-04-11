@@ -31,7 +31,7 @@ const EditExam = () => {
             });
 
             if (response.image) {
-                setImagePreview(`http://localhost:3000/uploads/${response.image}`)
+                setImagePreview(`https://server-multiple-choice-exam-production.up.railway.app/uploads/${response.image}`)
             } else {
                 setImagePreview(null);
             }                       

@@ -35,7 +35,7 @@ const Login = () => {
       // });
 
       // Cách 2 dùng axios
-      const response = await axios.post("http://localhost:3000/api/v1/users/auth/google",
+      const response = await axios.post("https://server-multiple-choice-exam-production.up.railway.app/api/v1/users/auth/google",
         { token },
         { withCredentials: true } // Dùng để gửi và nhận cookie
       );

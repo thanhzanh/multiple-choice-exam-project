@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/v1/exams";
+const API_URL = "https://server-multiple-choice-exam-production.up.railway.app/api/v1/exams";
 
 // Gửi dữ liệu tạo đề thi lên server
 export const createExam = async (formData) => {
