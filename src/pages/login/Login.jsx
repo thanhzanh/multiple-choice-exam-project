@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import banner from "../../assets/banner.png";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode"; // Giải mã token Google
 import { useNavigate, Navigate } from "react-router-dom";
 import { loginAccount } from "../../services/AccountService";
@@ -9,6 +9,8 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Cookies from "js-cookie";
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,13 +21,13 @@ const Login = () => {
   if (tokenUser) {
     return <Navigate to="/workspace/exams/list" replace />;
   }
-  
+
   // Xử lý đăng nhập bằng Google
   const handleGoogleSuccess = async (credentialResponse) => {
     const token = credentialResponse.credential;
-    
+
     // const userInfo = jwtDecode(token); // Giải mã để xem thông tin user
-    
+
     try {
       // Cách 1 dùng fetch
       // const response = await fetch("http://localhost:3000/api/v1/users/auth/google", {
@@ -35,12 +37,13 @@ const Login = () => {
       // });
 
       // Cách 2 dùng axios
-      const response = await axios.post("https://server-multiple-choice-exam-production.up.railway.app/api/v1/users/auth/google",
+      const response = await axios.post(
+        "https://server-multiple-choice-exam-production.up.railway.app/api/v1/users/auth/google",
         { token },
         { withCredentials: true } // Dùng để gửi và nhận cookie
       );
 
-      const data = response.data;      
+      const data = response.data;
 
       if (data.success) {
         toast.success("Đăng nhập thành công");
@@ -53,8 +56,7 @@ const Login = () => {
       console.error("Lỗi đăng nhập Google", error);
       toast.error("Đã xãy ra lỗi");
     }
-    
-  }
+  };
 
   // Xử lý đăng nhập bằng email & password
   const [login, setLogin] = useState({
@@ -115,10 +117,16 @@ const Login = () => {
       >
         <h4 className="text-center mb-4">Đăng nhập</h4>
 
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => {toast.error("Đăng nhập Google thất bại")}}
-        />
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => {
+              console.log("Google Login Failed");
+              toast.error("Đăng nhập Google thất bại");
+            }}
+          />
+        </GoogleOAuthProvider>
+
         <p className="text-center mt-3 mb-3 or-divider">hoặc tiếp tục với</p>
         <form method="POST" onSubmit={handleLogin}>
           <div className="mb-3 form-group">
@@ -149,7 +157,11 @@ const Login = () => {
             </div>
           </div>
           <div className="d-flex justify-content-between">
-            <p onClick={() => navigate('/auth/forgot-password')} className="text-decoration-none text-primary" style={{ cursor: "pointer" }}>
+            <p
+              onClick={() => navigate("/auth/forgot-password")}
+              className="text-decoration-none text-primary"
+              style={{ cursor: "pointer" }}
+            >
               Quên mật khẩu?
             </p>
           </div>

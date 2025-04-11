@@ -10,23 +10,29 @@ const HomeRedirect = () => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            try {
-                // Gọi API để kiểm tra token có hợp lệ không
-                // const response = await axios.get(`${API_URL}/getUser`, { withCredentials: true });
-                const tokenUser = Cookies.get("token");
+            const tokenUser = Cookies.get("token");
 
-                // Nếu có token hợp lệ => Chuyển đến danh sách đề thi
-                if (tokenUser) {
-                    console.log("Xác thực thành công:", tokenUser);
-                    navigate("/workspace/exams/list");
-                } else {
-                    throw new Error("Không xác thực được người dùng");
-                }
-            } catch (error) {
-                console.error("Không có token hoặc token không hợp lệ:", error);
+            // try {
+            //     // Gọi API để kiểm tra token có hợp lệ không
+            //     // const response = await axios.get(`${API_URL}/getUser`, { withCredentials: true });
+            //     const tokenUser = Cookies.get("token");
 
-                // Nếu không có token => Chuyển đến trang login
-                navigate('/auth/login');
+            //     // Nếu có token hợp lệ => Chuyển đến danh sách đề thi
+            //     if (tokenUser) {
+            //         console.log("Xác thực thành công:", tokenUser);
+            //         navigate("/workspace/exams/list");
+            //     } else {
+            //         throw new Error("Không xác thực được người dùng");
+            //     }
+            // } catch (error) {
+            //     console.error("Không có token hoặc token không hợp lệ:", error);
+
+            //     // Nếu không có token => Chuyển đến trang login
+            //     navigate('/auth/login');
+            // }
+            if (tokenUser) {
+                console.log("Xác thực thành công:", tokenUser);
+                navigate("/workspace/exams/list");
             }
         };
 
