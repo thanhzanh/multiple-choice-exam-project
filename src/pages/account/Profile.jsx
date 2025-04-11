@@ -224,7 +224,7 @@ const Profile = () => {
                     <input
                       type={showPassword.current ? "text" : "password"}
                       name="current_password"
-                      autoComplete="current-password"
+                      autocomplete="current-password"
                       className="form-control"
                       value={passwords.current_password}
                       style={{ width: "400px" }}

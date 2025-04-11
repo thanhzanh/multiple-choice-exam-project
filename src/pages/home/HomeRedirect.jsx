@@ -11,7 +11,7 @@ const HomeRedirect = () => {
         const checkAuth = async () => {
             try {
                 // Gọi API để kiểm tra token có hợp lệ không
-                await axios.get(`${API_URL}/getUser`, { withCredentials: true });
+                const response = await axios.get(`${API_URL}/getUser`, { withCredentials: true });
 
                 // Nếu có token hợp lệ => Chuyển đến danh sách đề thi
                 if (response.status === 200 && response.data) {
