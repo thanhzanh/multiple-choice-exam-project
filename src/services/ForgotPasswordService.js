@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://server-multiple-choice-exam-production.up.railway.app/api/v1/users";
+const API_URL = "http://localhost:3000/api/v1/users";
 
 export const forgotPassword = async (email) => {
     try {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://server-multiple-choice-exam-production.up.railway.app/api/v1/exams";
+const API_URL = "http://localhost:3000/api/v1/exams";
 
 // Gửi dữ liệu tạo đề thi lên server
 export const createExam = async (formData) => {
@@ -74,19 +74,25 @@ export const deleteExam = async (examId) => {
 
 // danh sách levels bài thi
 export const getListEnumExam = async () => {
-    const res = await axios.get(`${API_URL}/levels`);
+    const res = await axios.get(`${API_URL}/levels`, {
+        withCredentials: true,
+    });
     return res.data;
 };
 
 // tìm kiếm đề thi trên kênh đề thi
 export const search = async (searchKeyword) => {
-    const res = await axios.get(`${API_URL}/search?keyword=${searchKeyword}`);
+    const res = await axios.get(`${API_URL}/search?keyword=${searchKeyword}`, {
+        withCredentials: true,
+    });
     return res;
 }
 
 // lấy đề thi theo slug
 export const getExamBySlug = async (slug) => {
-    const res = await axios.get(`${API_URL}/${slug}`);
+    const res = await axios.get(`${API_URL}/${slug}`, {
+        withCredentials: true,
+    });
 
     console.log("Bai thi phan hoi: ", res.data);
     return res;
@@ -94,7 +100,9 @@ export const getExamBySlug = async (slug) => {
 
 // Đếm số lượng truy cập bài thi
 export const countViewsExam = async (slug) => {
-    const res = await axios.get(`${API_URL}/${slug}`);
+    const res = await axios.get(`${API_URL}/${slug}`, {
+        withCredentials: true,
+    });
     return res;
 }
 

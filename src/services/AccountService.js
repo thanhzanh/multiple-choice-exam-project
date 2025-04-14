@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://server-multiple-choice-exam-production.up.railway.app/api/v1/users";
+const API_URL = "http://localhost:3000/api/v1/users";
 
 // Đăng ký tài khoản
 export const createAccount = async (userData) => {
@@ -9,6 +9,7 @@ export const createAccount = async (userData) => {
             JSON.stringify(userData),
             {
             headers: { "Content-Type": "application/json" },
+            withCredentials: true,
         });
         
         return response;

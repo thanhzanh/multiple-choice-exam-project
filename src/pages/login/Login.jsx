@@ -38,12 +38,14 @@ const Login = () => {
 
       // Cách 2 dùng axios
       const response = await axios.post(
-        "https://server-multiple-choice-exam-production.up.railway.app/api/v1/users/auth/google",
+        "http://localhost:3000/api/v1/users/auth/google",
         { token },
         { withCredentials: true } // Dùng để gửi và nhận cookie
       );
 
       const data = response.data;
+      console.log("DATA: ", data);
+      
 
       if (data.success) {
         toast.success("Đăng nhập thành công");
@@ -71,48 +73,44 @@ const Login = () => {
   };
 
   // xử lý đăng nhập
-  // xử lý đăng nhập
-const handleLogin = async (e) => {
-  e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  try {
-    const userData = {
-      email: login.email,
-      password: login.password,
-    };
+    try {
+      const userData = {
+        email: login.email,
+        password: login.password,
+      };
 
-    // Gọi API đăng nhập
-    const response = await loginAccount(userData);
-    console.log("Phản hồi đăng nhập:", response.data);
+      // Gọi API đăng nhập
+      const response = await loginAccount(userData);
 
-    if (response.data.code === 200) {
-      toast.success("Đăng nhập thành công");
-      
-      // Lưu token vào cookies nếu cần (để đảm bảo frontend cũng có)
-      Cookies.set("token", response.data.token);
-      
-      console.log("Bắt đầu chuyển hướng...");
-      
-      // Thử với timeout để đảm bảo toast hiển thị trước khi chuyển trang
-      setTimeout(() => {
-        window.location.href = "/workspace/exams/list"; // Dùng window.location thay vì navigate
-      }, 1000);
-    } else {
-      toast.error(response.data.message || "Đăng nhập thất bại");
+      if (response.data.code === 200) {
+        toast.success("Đăng nhập thành công");
+
+        // Lưu token vào cookies nếu cần (để đảm bảo frontend cũng có)
+        Cookies.set("token", response.data.token);
+
+        // Thử với timeout để đảm bảo toast hiển thị trước khi chuyển trang
+        setTimeout(() => {
+          window.location.href = "/workspace/exams/list"; // Dùng window.location thay vì navigate
+        }, 1000);
+      } else {
+        toast.error(response.data.message || "Đăng nhập thất bại");
+      }
+    } catch (error) {
+      console.error("Lỗi đăng nhập:", error);
+
+      if (error.response && error.response.data) {
+        const { err, message } = error.response.data;
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [err]: message,
+        }));
+        toast.error(message);
+      }
     }
-  } catch (error) {
-    console.error("Lỗi đăng nhập:", error);
-    
-    if (error.response && error.response.data) {
-      const { err, message } = error.response.data;
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [err]: message,
-      }));
-      toast.error(message);
-    }
-  }
-};
+  };
 
   return (
     <div className="position-relative d-flex justify-content-center align-items-center vh-100">

@@ -22,10 +22,16 @@ const ExamPage = () => {
     const location = useLocation(); // dùng nhận dữ liệu từ state
     const { duration, questions, title, examId } = location.state || {};
     const [timeLeft, setTimeLeft] = useState(duration * 60);
+    const [startTime, setStartTime] = useState(null); 
 
     const totalQuestions = questions.length; // Tổng số câu hỏi
     const answeredCount = Object.keys(answers).length; // Tổng số câu hỏi đã trả lời
     const progressPersent = (answeredCount / totalQuestions) * 100; // Thanh tiến độ
+
+    // Hàm xử lý lấy thời gian thực tế làm bài
+    useEffect(() => {
+        setStartTime(new Date());
+      }, []);
 
     // Hàm xử lý scroll đến câu hỏi
     useEffect(() => {
@@ -91,14 +97,18 @@ const ExamPage = () => {
             userId: user ? user._id : "",
             examId: examId,
             timeSelected: duration, 
-            answers: Object.entries(answers).map(([questionId, selectedOption]) => ({
-                questionId,
-                selectedOption
+            startTime,
+            answers: questions.map((question) => ({
+                questionId: question._id,
+                selectedOption: answers[question._id] || "" // nếu chưa chọn, gán rỗng
             }))
         }
 
         try {
-            await submitExam(formData);
+            const response = await submitExam(formData);
+            console.log("Thong tin bai thi", response.data);
+            
+            const resultId = response.data.result._id; 
             confirmAlert({
                 title: 'Xác nhận nộp bài',
                 message: 'Bạn có chắc chắn muốn nộp bài.',
@@ -107,7 +117,7 @@ const ExamPage = () => {
                     label: 'Có',
                     onClick: () => {
                         toast.success("Nộp bài thành công");
-                        navigate('/workspace/exams/list');
+                        navigate(`/exams/result/${resultId}`);
                     }
                   },
                   {

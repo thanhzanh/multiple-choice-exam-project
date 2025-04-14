@@ -37,7 +37,7 @@ import axios from "axios";
 import parse from "html-react-parser";
 import { postComment, getCommentsByExamId } from "../../services/CommentService";
 
-const API_URL = "https://server-multiple-choice-exam-production.up.railway.app/api/v1/exams";
+const API_URL = "http://localhost:3000/api/v1/exams";
 
 const Flashcard = ({ question, options, answer, questionIndex }) => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -154,7 +154,9 @@ const InfoExam = () => {
   useEffect(() => {
     const getExamData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/${slug}`);
+        const response = await axios.get(`${API_URL}/${slug}`, {
+          withCredentials: true,
+        });
 
         setExam(response.data.exam);
         setQuestions(response.data.questions);

@@ -1,12 +1,13 @@
 import axios from "axios";
 
-const API_URL = "https://server-multiple-choice-exam-production.up.railway.app/api/v1/questions";
+const API_URL = "http://localhost:3000/api/v1/questions";
 
 // tạo câu hỏi
 export const saveQuestion = async (formData) => {
     try {
         const res = await axios.post(`${API_URL}/create`, formData, {
             headers: { "Content-Type": "application/json" },
+            withCredentials: true,
         });
         console.log("Data:", res);
         
@@ -20,7 +21,9 @@ export const saveQuestion = async (formData) => {
 // danh sách câu hỏi theo bài thi
 export const getQuestionsByExam = async (examId) => {
     try {
-        const res = await axios.get(`${API_URL}/getQuestionsByExam/${examId}`);
+        const res = await axios.get(`${API_URL}/getQuestionsByExam/${examId}`, {
+            withCredentials: true,
+        });
         
         return res.data;
     } catch (error) {
@@ -32,7 +35,9 @@ export const getQuestionsByExam = async (examId) => {
 // đếm câu hỏi theo bài thi
 export const countQuestionByExam = async (examId) => {
     try {
-        const res = await axios.get(`${API_URL}/countQuestion/${examId}`);
+        const res = await axios.get(`${API_URL}/countQuestion/${examId}`, {
+            withCredentials: true,
+        });
         return res.data;
     } catch (error) {
         console.error("Lỗi khi đếm số lượng câu hỏi", error);
@@ -45,6 +50,7 @@ export const editQuesion = async (id, formData) => {
     try {
         const res = await axios.put(`${API_URL}/edit/${id}`, formData, {
             headers: { "Content-Type": "application/json" },
+            withCredentials: true,
         });
         console.log(res.data);
         
