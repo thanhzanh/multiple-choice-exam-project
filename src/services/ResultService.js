@@ -25,3 +25,10 @@ export const getResultExam = async (resultId) => {
     return res;
 };
 
+export const getListResultExam = async (userId) => {
+    const res = await axios.get(`${API_URL}/list/${userId}`, {
+        withCredentials: true,
+    });    
+    return res;
+};
+

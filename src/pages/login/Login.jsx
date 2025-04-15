@@ -43,9 +43,7 @@ const Login = () => {
         { withCredentials: true } // Dùng để gửi và nhận cookie
       );
 
-      const data = response.data;
-      console.log("DATA: ", data);
-      
+      const data = response.data;      
 
       if (data.success) {
         toast.success("Đăng nhập thành công");

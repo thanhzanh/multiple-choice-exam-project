@@ -25,9 +25,9 @@ const Sidebar = () => {
           <FontAwesomeIcon className='nav-icon' icon={faHeart} />
           Đề thi yêu thích
           </Nav.Link>
-        <Nav.Link className='navbar-item' href="#">
+        <Nav.Link className={`navbar-item ${isActive('/personal/exams/my-results')}`} onClick={() => navigate('/personal/exams/my-results')}>
           <FontAwesomeIcon className='nav-icon' icon={faList} />
-          Kết quả thi
+          Kết quả thi của tôi
         </Nav.Link>
         <Nav.Link className={`navbar-item ${isActive('/workspace/exams/list')}`} onClick={() => navigate('/workspace/exams/list')}>
           <FontAwesomeIcon className='nav-icon' icon={faSliders} />
