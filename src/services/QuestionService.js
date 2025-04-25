@@ -9,7 +9,6 @@ export const saveQuestion = async (formData) => {
             headers: { "Content-Type": "application/json" },
             withCredentials: true,
         });
-        console.log("Data:", res);
         
         return res;
     } catch (error) {

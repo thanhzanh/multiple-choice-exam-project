@@ -7,13 +7,14 @@ import { faAdd } from "@fortawesome/free-solid-svg-icons";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-import { saveQuestion, getQuestionsByExam } from "../../services/QuestionService";
+import {
+  saveQuestion,
+  getQuestionsByExam,
+} from "../../services/QuestionService";
 
 import { useParams, useLocation } from "react-router-dom"; // lấy id từ API phản hồi
 
-
 const CreateQuestion = () => {
-
   const navigate = useNavigate(); // Điều hướng
 
   const location = useLocation(); // Dùng để nhận data từ trang trước
@@ -22,7 +23,9 @@ const CreateQuestion = () => {
   const [questionText, setQuestionText] = useState(""); // Nội dung câu hỏi
   const [options, setOptions] = useState(["", ""]); // Danh sách đáp án (mặc định có 2 đáp án)
   const [correctAnswer, setCorrectAnswer] = useState([]); // Đáp án đúng
-  const [questionsList, setQuestionsList] = useState(location.state?.questionsList || []); // Danh sách câu hỏi
+  const [questionsList, setQuestionsList] = useState(
+    location.state?.questionsList || []
+  ); // Danh sách câu hỏi
 
   // examId truyền từ params về từ phản hồi API
   const { examId } = useParams(); // Lấy examId từ URL
@@ -40,7 +43,6 @@ const CreateQuestion = () => {
 
   useEffect(() => {
     getListQuestions(); // gọi hàm để thực hiện
-
   }, [examId]); // chạy khi examId thay đổi
 
   // Cập nhật nội dung đáp án
@@ -64,34 +66,37 @@ const CreateQuestion = () => {
     }
 
     // nếu đáp án là true_false, fill_in_the_blank thì lưu null (không cần lưu options)
-    const optionToSave = (questionType === "true_false" || questionType === "fill_in_the_blank" ) ? null : options;
+    const optionToSave =
+      questionType === "true_false" || questionType === "fill_in_the_blank"
+        ? null
+        : options;
 
     const formData = {
       examId,
       questionText,
       type: questionType,
       options: optionToSave,
-      correctAnswer
-    }
+      correctAnswer,
+    };
 
     try {
       // gửi lên server lưu vào database
       const response = await saveQuestion(formData);
 
       // Cập nhật danh sách bằng cách gọi lại API
-      await getListQuestions();  
+      await getListQuestions();
 
       toast.success("Lưu thành công");
 
       // reset lại để tạo câu hỏi mới
       setQuestionType("single");
       setQuestionText("");
-      setOptions(["",""]);
+      setOptions(["", ""]);
       setCorrectAnswer([]);
-
     } catch (error) {
-      console.error("Lỗi khi lưu câu hỏi:", error);    }
-  }
+      console.error("Lỗi khi lưu câu hỏi:", error);
+    }
+  };
 
   // Quay về trang chỉnh sửa
   const handleBackToEdit = () => {
@@ -101,10 +106,20 @@ const CreateQuestion = () => {
   return (
     <MainLayout>
       <Row className="d-flex justify-content-between align-items-center">
-        <Col><h3 className="mb-4">Tạo câu hỏi</h3></Col>
+        <Col>
+          <h3 className="mb-4">Tạo câu hỏi</h3>
+        </Col>
         <Col className="text-end">
-        <button type="button" onClick={handleBackToEdit} className="btn-save">Quay lại chỉnh sửa</button>
-        <button type="button" onClick={handleSaveQuestion} className="btn-save">Lưu câu hỏi</button>
+          <button type="button" onClick={handleBackToEdit} className="btn-save">
+            Quay lại chỉnh sửa
+          </button>
+          <button
+            type="button"
+            onClick={handleSaveQuestion}
+            className="btn-save"
+          >
+            Lưu câu hỏi
+          </button>
         </Col>
       </Row>
 
@@ -112,14 +127,14 @@ const CreateQuestion = () => {
         <Row>
           {/* Danh sách phần thi */}
           <Col className="card-sticky-list" md={4}>
-            <Card className="card-list-part-exam" style={{ height:200 }}>
+            <Card className="card-list-part-exam" style={{ height: 200 }}>
               <Card.Body>
                 <h4>Danh sách câu hỏi</h4>
                 {questionsList.map((_, i) => (
-                <button key={i} type="button" className="btn-stt-questions">
-                  {i + 1}
-                </button>
-              ))}
+                  <button key={i} type="button" className="btn-stt-questions">
+                    {i + 1}
+                  </button>
+                ))}
               </Card.Body>
             </Card>
           </Col>
@@ -148,7 +163,10 @@ const CreateQuestion = () => {
                   {/* Soạn câu hỏi */}
                   <Form.Group className="mb-2">
                     <Form.Label>Soạn câu hỏi</Form.Label>
-                    <TinyMCEEditor value={questionText} onChange={setQuestionText} />
+                    <TinyMCEEditor
+                      value={questionText}
+                      onChange={setQuestionText}
+                    />
                   </Form.Group>
 
                   {/* Loại câu hỏi: một đáp án */}
@@ -197,9 +215,19 @@ const CreateQuestion = () => {
                       {options.map((option, index) => (
                         <Form.Group className="mb-2" key={index}>
                           <Form.Group className="d-flex">
-                            <Form.Check 
+                            <Form.Check
                               type="checkbox"
+                              name="correctAnswer"
                               checked={correctAnswer.includes(option)}
+                              onChange={() => {
+                                const newCorrectAnswers =
+                                  correctAnswer.includes(option)
+                                    ? correctAnswer.filter(
+                                        (ans) => ans !== option
+                                      )
+                                    : [...correctAnswer, option];
+                                setCorrectAnswer(newCorrectAnswers);
+                              }}
                             />
                             <Form.Label className="label-answer">
                               Đáp án {index + 1}
@@ -239,19 +267,19 @@ const CreateQuestion = () => {
                     <Form.Group className="mb-2">
                       <Form.Label>Câu trả lời</Form.Label>
                       <Form.Check
-                          type="radio"
-                          name="trueFalse"
-                          label="Đúng"
-                          checked={correctAnswer.includes("true")}
-                          onChange={() => setCorrectAnswer("true")}
-                        />
-                        <Form.Check
-                          type="radio"
-                          name="trueFalse"
-                          label="Sai"
-                          checked={correctAnswer.includes("false")}
-                          onChange={() => setCorrectAnswer("false")}
-                        />
+                        type="radio"
+                        name="trueFalse"
+                        label="Đúng"
+                        checked={correctAnswer.includes("true")}
+                        onChange={() => setCorrectAnswer("true")}
+                      />
+                      <Form.Check
+                        type="radio"
+                        name="trueFalse"
+                        label="Sai"
+                        checked={correctAnswer.includes("false")}
+                        onChange={() => setCorrectAnswer("false")}
+                      />
                     </Form.Group>
                   )}
                 </Form>

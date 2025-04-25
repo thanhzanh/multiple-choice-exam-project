@@ -101,8 +101,6 @@ const InfoExam = () => {
   const tabs = [
     "Nội dung đề thi",
     "Đánh giá",
-    "Kết quả ôn tập",
-    "Thống kê ôn tập",
   ];
   // END TAB
 
@@ -585,14 +583,6 @@ const InfoExam = () => {
                       )}
                     </div>
                   </div>
-                )}
-
-                {/* Tab: Kết quả học tập */}
-                {activeTab === "Kết quả ôn tập" && <p>Kết quả ôn tập</p>}
-
-                {/* Tab: Thống kê ôn tập */}
-                {activeTab === "Thống kê ôn tập" && (
-                  <p>Nội dung Thống kê ôn tập</p>
                 )}
               </div>
             </Card>
