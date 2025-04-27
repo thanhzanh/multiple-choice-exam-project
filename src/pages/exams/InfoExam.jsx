@@ -175,7 +175,6 @@ const InfoExam = () => {
   // Hàm check bài thi đã tym hay chưa
   useEffect(() => {
     const checkFavoriteStatus = async () => {
-      if (!exam._id) return;
       try {
         const favoriteExams = await listFavoriteExam();
         const isFav = favoriteExams.some((ex) => ex._id === exam._id); // kiểm tra bài thi hiện tại có trong danh sách hay không
@@ -259,16 +258,17 @@ const InfoExam = () => {
 
   // Hàm xử lý lấy bình luận
   useEffect(() => {
+    if (!exam || !exam._id) return; 
     const fetchComments = async () => {
       try {
-        const data = await getCommentsByExamId(exam._id);
+        const data = await getCommentsByExamId(exam?._id);
         setComments(data);
       } catch (err) {
         console.error("Lỗi khi lấy bình luận:", err);
       }
     };
     fetchComments();
-  }, [exam ? exam._id : ""]);
+  }, [exam?._id]);
 
   return (
     <div>

@@ -54,7 +54,7 @@ const MyResult = () => {
   return (
     <MainLayout>
       <div className="my-result-container">
-        <h4 className="mb-4">Kết quả thi</h4>
+        <h4 className="mb-4">Kết quả thi của tôi</h4>
 
         <div className="table-responsive">
           <table className="table table-hover">

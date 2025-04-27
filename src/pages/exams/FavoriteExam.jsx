@@ -159,6 +159,9 @@ const FavoriteExam = () => {
                 </Card>
               </div>
             ))}
+            {
+              <p className="m-3 text-danger">Không có đề thi yêu thích</p>
+            }
           </div>
         </Card>
       </div>

@@ -49,14 +49,17 @@ const Search = () => {
   // hàm tìm kiếm bài thi
   const fetchSearchResults = async (keyword) => {
     try {
-      const response = await axios.get(`${API_URL}/search?keyword=${keyword}`);
-
-      let exams = response.data;
+      const { data: exams } = await axios.get(`${API_URL}/search`, {
+        params: { keyword },
+      });
+      
       // Gọi API đếm số câu hỏi cho từng bài thi
       const updatedExams = await Promise.all(
         exams.map( async(exam) => {
           try {
-            const count = await axios.get(`http://localhost:3000/api/v1/questions/countQuestion/${exam._id}`);
+            const count = await axios.get(`http://localhost:3000/api/v1/questions/countQuestion/${exam._id}`, {
+              withCredentials: true
+            });
 
             return { ...exam, questionCount: count.data.totalQuestion }
           } catch (error) {
