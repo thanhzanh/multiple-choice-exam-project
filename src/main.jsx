@@ -7,6 +7,7 @@ import '../src/styles/header.css';
 import '../src/styles/account.css';
 import '../src/styles/exam.css';
 import '../src/styles/result.css';
+import '../src/styles/responsive.css';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

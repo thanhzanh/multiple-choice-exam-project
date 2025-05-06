@@ -81,7 +81,7 @@ const FavoriteExam = () => {
           </Card.Header>
 
           <div className="d-flex flex-wrap">
-            {exams.map((exam) => (
+            {exams && exams.map((exam) => (
               <div key={exam._id} style={{ width: "25%" }}>
                 <Card className="shadow-sm item-exam">
                   <Card.Img
@@ -159,8 +159,9 @@ const FavoriteExam = () => {
                 </Card>
               </div>
             ))}
-            {
+            { exams && exams.length === 0 && (
               <p className="m-3 text-danger">Không có đề thi yêu thích</p>
+            )
             }
           </div>
         </Card>

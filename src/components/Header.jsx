@@ -31,11 +31,11 @@ const Header = () => {
 
   const [user, setUser] = useState(null);
 
+
   useEffect(() => {
     const getInfoUser = async () => {
       try {
         const infoUser = await getUser(); // Phản hồi từ gọi API
-
         setUser(infoUser);
       } catch (error) {
         console.error("Lỗi khi thấy thông tin người dùng:", error);
@@ -72,7 +72,7 @@ const Header = () => {
   return (
     <Navbar bg="light" expand="lg" className="px-3 inner-header">
       <Container fluid>
-        <Row className="align-items-center header">
+        <Row className="align-items-center header gy-3 w-100">
           <Col xs={12} md={3} className="header-info">
             {user && user.avatar ? (
               <Image
@@ -88,7 +88,7 @@ const Header = () => {
             )}
             <div className="header-info-user">
               <span className="ml-2 font-weight-bold">
-                {user ? user.fullName : "Đang tải..."}
+                {user?.fullName}
               </span>
               <p>Kênh đề thi</p>
             </div>

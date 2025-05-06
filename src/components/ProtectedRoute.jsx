@@ -4,8 +4,9 @@ import Cookies from "js-cookie";
 const ProtectedRoute = ({ auth }) => {
   const token = Cookies.get("token");
   const location = useLocation();
+  const isResetPasswordPage = location.pathname === "/auth/reset-password";
 
-  if (auth) {
+  if (auth && !isResetPasswordPage) {
     // Nếu đã đăng nhập mà vào trang login/register → Chuyển hướng về dashboard
     return token ? <Navigate to="/workspace/exams/list" replace /> : <Outlet />;
   }

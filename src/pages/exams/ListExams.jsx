@@ -103,9 +103,9 @@ const ListExams = () => {
             </Form.Group>
           </Card.Header>
 
-          <div className="d-flex flex-wrap">
+          <Row className="d-flex flex-wrap">
             {exams.map((exam) => (
-              <div key={exam._id} style={{ width: "25%" }}>
+              <Col key={exam._id} xs={12} sm={6} md={4} lg={3}>
                 <Card className="shadow-sm item-exam">
                   <Card.Img
                     variant="top"
@@ -114,7 +114,7 @@ const ListExams = () => {
                     className="item-exam-img"
                     onClick={() => window.open(`/exams/${exam.slug}`)}
                   />
-                  <Card.Body className="">
+                  <Card.Body className="flex-grow-1 d-flex flex-column">
                     <p className="item-exam-title">{exam.title}</p>
                     <p className="text-muted item-exam-create">
                       <FontAwesomeIcon
@@ -126,7 +126,7 @@ const ListExams = () => {
                     </p>
 
                     {/* Thống kê*/}
-                    <div className="d-flex gap-3">
+                    <div className="d-flex gap-3 flex-wrap">
                       <span>
                         <FontAwesomeIcon
                           icon={faQuestionCircle}
@@ -198,9 +198,9 @@ const ListExams = () => {
                     </Button>
                   </Card.Footer>
                 </Card>
-              </div>
+              </Col>
             ))}
-          </div>
+          </Row>
         </Card>
       </div>
     </MainLayout>

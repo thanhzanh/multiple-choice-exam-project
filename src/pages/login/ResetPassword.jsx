@@ -50,7 +50,7 @@ const ResetPassword = () => {
 
       toast.success("Đổi mật khẩu thành công");
 
-      navigate("/auth/login");
+      navigate("/auth/login"); 
 
     } catch (error) {
       toast.error(error.response?.data?.message || "Lỗi khi đặt lại mật khẩu.");

@@ -8,7 +8,7 @@ const MainLayout = ({ children }) => {
     <Container fluid>
       <Row>
         {/* Sidebar */}
-        <Col md={2} className="p-0">
+        <Col md={2} className="p-0 d-none d-md-block">
           <Sidebar />
         </Col>
 

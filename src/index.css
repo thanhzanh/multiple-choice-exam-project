@@ -122,6 +122,12 @@
 .item-exam .item-exam-title {
   font-size: 18px;
   font-weight: 400;
+  height: 48px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* số dòng */
+  -webkit-box-orient: vertical;
 }
 
 .item-exam .item-exam-create,.item-exam-icon {
@@ -134,15 +140,6 @@
   margin: 0px;
   margin-right: 10px;
 }
-
-
-/* .card-sticky-list {
-  position: sticky;
-  top: 100px;
-  height: 100vh;
-  overflow-y: auto;
-  position: absolute;
-} */
 
 /* button question when choice */
 .btn-stt-questions {
